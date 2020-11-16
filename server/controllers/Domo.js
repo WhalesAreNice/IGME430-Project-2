@@ -89,6 +89,6 @@ const levelUpDomo = (req, res) => {
 }
 
 module.exports.makerPage = makerPage;
-module.exports.getDomos = getDomos;
+module.exports.getShopper = getDomos;
 module.exports.make = makeDomo;
 module.exports.levelUp = levelUpDomo;

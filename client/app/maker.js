@@ -1,6 +1,6 @@
 let _csrf;
 
-const handleDomo = (e) => {
+const handleShopper = (e) => {
     e.preventDefault();
     
     $("#domoMessage").animate({width:'hide'},350);
@@ -11,13 +11,13 @@ const handleDomo = (e) => {
     }
     sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
         
-        loadDomosFromServer();
+        loadShoppersFromServer();
     });
     
     return false;
 };
 
-const LevelUpDomo = (e) => {
+const LevelUpShopper = (e) => {
     e.preventDefault();
     
     //console.log(_csrf);
@@ -41,36 +41,36 @@ const LevelUpDomo = (e) => {
         _csrf: _csrf,
     }
     
-    sendAjax('POST', '/levelUp', domoData, loadDomosFromServer);
+    sendAjax('POST', '/levelUp', domoData, loadShoppersFromServer);
     return false;
 };
 
-const DomoForm = (props) => {
+const ShopperForm = (props) => {
     return (
         <form id="domoForm" 
-            onSubmit={handleDomo}
+            onSubmit={handleShopper}
             name="domoForm"
             action="/maker"
             method="POST"
             className="domoForm"
         >
             <label htmlFor="name">Name: </label>
-            <input id="domoName" type="text" name="name" placeholder="Domo Name"/>
+            <input id="domoName" type="text" name="name" placeholder="Shopper Name"/>
             <label htmlFor="age">Age: </label>
-            <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
+            <input id="domoAge" type="text" name="age" placeholder="Shopper Age"/>
             <label htmlFor="level">Level: </label>
-            <input id="domoLevel" type="text" name="level" placeholder="Domo Level"/>
+            <input id="domoLevel" type="text" name="level" placeholder="Shopper Level"/>
             <input type="hidden" name="_csrf" value={props.csrf} />
-            <input className="makeDomoSubmit" type="submit" value="Make Domo" />
+            <input className="makeDomoSubmit" type="submit" value="Make Shopper" />
         </form>
     );  
 };
 
-const DomoList = function(props) {
+const ShopperList = function(props) {
     if(props.domos.length===0) {
         return (
             <div className="domoList">
-                <h3 className="emptyDomo">No Domos yet</h3>
+                <h3 className="emptyDomo">No Shoppers yet</h3>
             </div>
         );
     } 
@@ -82,7 +82,7 @@ const DomoList = function(props) {
                 <h3 className="domoName">Name: {domo.name}</h3>
                 <h3 className="domoAge">Age: {domo.age}</h3>
                 <h3 className="domoLevel">Level: {domo.level}</h3>
-                <input className="levelUpDomo" type="submit" value="Level Up" onClick={LevelUpDomo} data-domoid={domo._id} csrf={_csrf} />
+                <input className="levelUpDomo" type="submit" value="Level Up" onClick={LevelUpShopper} data-domoid={domo._id} csrf={_csrf} />
             </div>
         );
     });
@@ -95,10 +95,10 @@ const DomoList = function(props) {
 };
 
 
-const loadDomosFromServer = () => {
-    sendAjax('GET', '/getDomos', null, (data) => {
+const loadShoppersFromServer = () => {
+    sendAjax('GET', '/getShopper', null, (data) => {
         ReactDOM.render(
-            <DomoList domos={data.domos} />, document.querySelector("#domos")
+            <ShopperList domos={data.domos} />, document.querySelector("#domos")
         ); 
     });
 };
@@ -107,14 +107,14 @@ const setup = function(csrf) {
     _csrf = csrf;
     
     ReactDOM.render(
-        <DomoForm csrf={csrf} />, document.querySelector("#makeDomo")
+        <ShopperForm csrf={csrf} />, document.querySelector("#makeDomo")
     );
     
     ReactDOM.render(
-        <DomoList domos={[]} />, document.querySelector("#domos")
+        <ShopperList domos={[]} />, document.querySelector("#domos")
     );
     
-    loadDomosFromServer();
+    loadShoppersFromServer();
 };
 
 const getToken = () => {

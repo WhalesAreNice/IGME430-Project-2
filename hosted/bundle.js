@@ -2,7 +2,7 @@
 
 var _csrf;
 
-var handleDomo = function handleDomo(e) {
+var handleShopper = function handleShopper(e) {
   e.preventDefault();
   $("#domoMessage").animate({
     width: 'hide'
@@ -14,12 +14,12 @@ var handleDomo = function handleDomo(e) {
   }
 
   sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
-    loadDomosFromServer();
+    loadShoppersFromServer();
   });
   return false;
 };
 
-var LevelUpDomo = function LevelUpDomo(e) {
+var LevelUpShopper = function LevelUpShopper(e) {
   e.preventDefault(); //console.log(_csrf);
   //console.log("test");
   //let newLevel = e.target.dataset.level + 1;
@@ -37,14 +37,14 @@ var LevelUpDomo = function LevelUpDomo(e) {
     id: e.target.dataset.domoid,
     _csrf: _csrf
   };
-  sendAjax('POST', '/levelUp', domoData, loadDomosFromServer);
+  sendAjax('POST', '/levelUp', domoData, loadShoppersFromServer);
   return false;
 };
 
-var DomoForm = function DomoForm(props) {
+var ShopperForm = function ShopperForm(props) {
   return /*#__PURE__*/React.createElement("form", {
     id: "domoForm",
-    onSubmit: handleDomo,
+    onSubmit: handleShopper,
     name: "domoForm",
     action: "/maker",
     method: "POST",
@@ -55,21 +55,21 @@ var DomoForm = function DomoForm(props) {
     id: "domoName",
     type: "text",
     name: "name",
-    placeholder: "Domo Name"
+    placeholder: "Shopper Name"
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "age"
   }, "Age: "), /*#__PURE__*/React.createElement("input", {
     id: "domoAge",
     type: "text",
     name: "age",
-    placeholder: "Domo Age"
+    placeholder: "Shopper Age"
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "level"
   }, "Level: "), /*#__PURE__*/React.createElement("input", {
     id: "domoLevel",
     type: "text",
     name: "level",
-    placeholder: "Domo Level"
+    placeholder: "Shopper Level"
   }), /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     name: "_csrf",
@@ -77,17 +77,17 @@ var DomoForm = function DomoForm(props) {
   }), /*#__PURE__*/React.createElement("input", {
     className: "makeDomoSubmit",
     type: "submit",
-    value: "Make Domo"
+    value: "Make Shopper"
   }));
 };
 
-var DomoList = function DomoList(props) {
+var ShopperList = function ShopperList(props) {
   if (props.domos.length === 0) {
     return /*#__PURE__*/React.createElement("div", {
       className: "domoList"
     }, /*#__PURE__*/React.createElement("h3", {
       className: "emptyDomo"
-    }, "No Domos yet"));
+    }, "No Shoppers yet"));
   }
 
   var domoNodes = props.domos.map(function (domo) {
@@ -108,7 +108,7 @@ var DomoList = function DomoList(props) {
       className: "levelUpDomo",
       type: "submit",
       value: "Level Up",
-      onClick: LevelUpDomo,
+      onClick: LevelUpShopper,
       "data-domoid": domo._id,
       csrf: _csrf
     }));
@@ -118,9 +118,9 @@ var DomoList = function DomoList(props) {
   }, domoNodes);
 };
 
-var loadDomosFromServer = function loadDomosFromServer() {
-  sendAjax('GET', '/getDomos', null, function (data) {
-    ReactDOM.render( /*#__PURE__*/React.createElement(DomoList, {
+var loadShoppersFromServer = function loadShoppersFromServer() {
+  sendAjax('GET', '/getShopper', null, function (data) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(ShopperList, {
       domos: data.domos
     }), document.querySelector("#domos"));
   });
@@ -128,13 +128,13 @@ var loadDomosFromServer = function loadDomosFromServer() {
 
 var setup = function setup(csrf) {
   _csrf = csrf;
-  ReactDOM.render( /*#__PURE__*/React.createElement(DomoForm, {
+  ReactDOM.render( /*#__PURE__*/React.createElement(ShopperForm, {
     csrf: csrf
   }), document.querySelector("#makeDomo"));
-  ReactDOM.render( /*#__PURE__*/React.createElement(DomoList, {
+  ReactDOM.render( /*#__PURE__*/React.createElement(ShopperList, {
     domos: []
   }), document.querySelector("#domos"));
-  loadDomosFromServer();
+  loadShoppersFromServer();
 };
 
 var getToken = function getToken() {

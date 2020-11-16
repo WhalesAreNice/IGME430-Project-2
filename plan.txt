@@ -1,0 +1,12 @@
+shopping site simulator
+
+site pages
+
+login
+making shopper
+shopping pages
+- main
+- tops
+- bottoms
+- assessories
+shopping cart
