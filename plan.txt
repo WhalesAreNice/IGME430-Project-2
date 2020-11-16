@@ -10,3 +10,13 @@ shopping pages
 - bottoms
 - assessories
 shopping cart
+
+
+
+
+
+run commands
+
+npm run watchAppBundle
+npm run watchLoginBundle
+npm run nodemon
