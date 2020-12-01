@@ -20,8 +20,6 @@ const handleShopper = (e) => {
 const MoneyUpShopper = (e) => {
     e.preventDefault();
     
-    
-    
     let shopperData = {
         id: e.target.dataset.shopperid,
         _csrf: _csrf,
@@ -69,6 +67,8 @@ const ShopperList = function(props) {
                 <h3 className="shopperAge">Age: {shopper.age}</h3>
                 <h3 className="shopperMoney">Money: {shopper.money}</h3>
                 <input className="moneyUpShopper" type="submit" value="Money Up" onClick={MoneyUpShopper} data-shopperid={shopper._id} csrf={_csrf} />
+                <input className="startShopping" type="submit" value="Start Shopping"  data-onClick={StartShopping} shopperid={shopper._id} csrf={_csrf} />
+                
             </div>
         );
     });
@@ -79,6 +79,56 @@ const ShopperList = function(props) {
         </div>
     );
 };
+
+const StartShopping = (e) => {
+    e.preventDefault();
+    
+    let shopperData = {
+        id: e.target.dataset.shopperid,
+        _csrf: _csrf,
+    }
+    
+    sendAjax('POST', '/shop', shopperData, loadShoppingOptions);
+    return false;
+};
+
+
+const ShoppingOptions = function(props) {
+    const categories = ['Shirts', 'Pants', 'Accesssories'];
+    const shirts = ['White T-Shirt', 'Black T-Shirt', 'Red T-Shirt'];
+    const pants = ['Black Cargo', 'White Cargo', 'Red Cargo'];
+    const accessories = ['Necklace', 'Ring', 'Bracelet'];
+    
+    const shoppingPage = (
+        <div id="shopCategories"> //put to left side of screen
+            {categories}
+        </div>
+        
+        //if chosen category is shirts
+        //<div id="shirts">
+        //    //for each shirt index
+        //    <div class="shirt">
+        //        <img src="" alt=""/> //put image of the shirt
+        //        <h3>{shirts[0]}</h3> //name of the shirt
+        //        <input type="text" className="addToCart" value="Add to Cart" data-shopperid={shopper._id} csrf={_csrf}/> // will need an onclick that adds the shirt to an array for the shopping cart
+        //    </div>
+        //</div>
+    );
+    
+    return (
+        <div className="shoppingOptions">
+            {shoppingPage}
+        </div>
+    );
+};
+
+const loadShoppingOptions = () => {
+    sendAjax('GET', '/getShopper', null, (data) => {
+        ReactDOM.render(
+            <ShoppingOptions shoppers={data.shoppers} />, document.querySelector("#shoppingOptions")
+        ); 
+    });
+}
 
 
 const loadShoppersFromServer = () => {

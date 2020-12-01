@@ -71,7 +71,7 @@ const moneyUpShopper = (req, res) => {
         }
         
         const shopperData = docs;
-        shopperData.money++;
+        shopperData.money+= 10;
         
         const shopperPromise = shopperData.save();
         
@@ -86,7 +86,18 @@ const moneyUpShopper = (req, res) => {
     
 }
 
+//const StartShopping = (req, res) => {
+//    Shopper.ShopperModel.findByOwner(req.session.account._id, (err, docs) => {
+//        if (err) {
+//            console.log(err);
+//            return res.status(400).json({ error: 'An error occurred' });
+//        }
+//        return res.render('shop', { csrfToken: req.csrfToken(), shoppers: docs });
+//    });
+//}
+
 module.exports.makerPage = makerPage;
 module.exports.getShopper = getShoppers;
 module.exports.make = makeShopper;
 module.exports.moneyUp = moneyUpShopper;
+//module.exports.startShopping = StartShopping;

@@ -99,11 +99,58 @@ var ShopperList = function ShopperList(props) {
       onClick: MoneyUpShopper,
       "data-shopperid": shopper._id,
       csrf: _csrf
+    }), /*#__PURE__*/React.createElement("input", {
+      className: "startShopping",
+      type: "submit",
+      value: "Start Shopping",
+      "data-onClick": StartShopping,
+      shopperid: shopper._id,
+      csrf: _csrf
     }));
   });
   return /*#__PURE__*/React.createElement("div", {
     className: "shopperList"
   }, shopperNodes);
+};
+
+var StartShopping = function StartShopping(e) {
+  e.preventDefault();
+  var shopperData = {
+    id: e.target.dataset.shopperid,
+    _csrf: _csrf
+  };
+  sendAjax('POST', '/shop', shopperData, loadShoppingOptions);
+  return false;
+};
+
+var ShoppingOptions = function ShoppingOptions(props) {
+  var categories = ['Shirts', 'Pants', 'Accesssories'];
+  var shirts = ['White T-Shirt', 'Black T-Shirt', 'Red T-Shirt'];
+  var pants = ['Black Cargo', 'White Cargo', 'Red Cargo'];
+  var accessories = ['Necklace', 'Ring', 'Bracelet'];
+  var shoppingPage = /*#__PURE__*/React.createElement("div", {
+    id: "shopCategories"
+  }, " //put to left side of screen", categories) //if chosen category is shirts
+  //<div id="shirts">
+  //    //for each shirt index
+  //    <div class="shirt">
+  //        <img src="" alt=""/> //put image of the shirt
+  //        <h3>{shirts[0]}</h3> //name of the shirt
+  //        <input type="text" className="addToCart" value="Add to Cart" data-shopperid={shopper._id} csrf={_csrf}/> // will need an onclick that adds the shirt to an array for the shopping cart
+  //    </div>
+  //</div>
+  ;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "shoppingOptions"
+  }, shoppingPage);
+};
+
+var loadShoppingOptions = function loadShoppingOptions() {
+  sendAjax('GET', '/getShopper', null, function (data) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingOptions, {
+      shoppers: data.shoppers
+    }), document.querySelector("#shoppingOptions"));
+  });
 };
 
 var loadShoppersFromServer = function loadShoppersFromServer() {
