@@ -1,104 +1,90 @@
 let _csrf;
 
-const handleDomo = (e) => {
+const handleShopper = (e) => {
     e.preventDefault();
     
-    $("#domoMessage").animate({width:'hide'},350);
+    $("#shopperMessage").animate({width:'hide'},350);
 
-    if($("#domoName").val() == '' || $("#domoAge").val()=='' || $("#domoLevel").val() =='') {
+    if($("#shopperName").val() == '' || $("#shopperAge").val()=='' || $("#shopperMoney").val() =='') {
         handleError("RAWR! All fields are required");
         return false;
     }
-    sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
+    sendAjax('POST', $("#shopperForm").attr("action"), $("#shopperForm").serialize(), function() {
         
-        loadDomosFromServer();
+        loadShoppersFromServer();
     });
     
     return false;
 };
 
-const LevelUpDomo = (e) => {
+const MoneyUpShopper = (e) => {
     e.preventDefault();
     
-    //console.log(_csrf);
-    //console.log("test");
     
-    //let newLevel = e.target.dataset.level + 1;
-    //
-    //let domoData = Domo.find(e.target.dataset.domoid);
     
-    //let domoData = {
-    //    id: e.target.dataset.domoid,
-    //    name: e.target.dataset.name,
-    //    age: e.target.dataset.age,
-    //    level: newLevel,
-    //};
-    
-    //console.log(domoData);
-    
-    let domoData = {
-        id: e.target.dataset.domoid,
+    let shopperData = {
+        id: e.target.dataset.shopperid,
         _csrf: _csrf,
     }
     
-    sendAjax('POST', '/levelUp', domoData, loadDomosFromServer);
+    sendAjax('POST', '/moneyUp', shopperData, loadShoppersFromServer);
     return false;
 };
 
-const DomoForm = (props) => {
+const ShopperForm = (props) => {
     return (
-        <form id="domoForm" 
-            onSubmit={handleDomo}
-            name="domoForm"
+        <form id="shopperForm" 
+            onSubmit={handleShopper}
+            name="shopperForm"
             action="/maker"
             method="POST"
-            className="domoForm"
+            className="shopperForm"
         >
             <label htmlFor="name">Name: </label>
-            <input id="domoName" type="text" name="name" placeholder="Domo Name"/>
+            <input id="shopperName" type="text" name="name" placeholder="Shopper Name"/>
             <label htmlFor="age">Age: </label>
-            <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
-            <label htmlFor="level">Level: </label>
-            <input id="domoLevel" type="text" name="level" placeholder="Domo Level"/>
+            <input id="shopperAge" type="text" name="age" placeholder="Shopper Age"/>
+            <label htmlFor="money">Money: </label>
+            <input id="shopperMoney" type="text" name="money" placeholder="Shopper Money"/>
             <input type="hidden" name="_csrf" value={props.csrf} />
-            <input className="makeDomoSubmit" type="submit" value="Make Domo" />
+            <input className="makeShopperSubmit" type="submit" value="Make Shopper" />
         </form>
     );  
 };
 
-const DomoList = function(props) {
-    if(props.domos.length===0) {
+const ShopperList = function(props) {
+    if(props.shoppers.length===0) {
         return (
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos yet</h3>
+            <div className="shopperList">
+                <h3 className="emptyShopper">No Shoppers yet</h3>
             </div>
         );
     } 
 
-    const domoNodes = props.domos.map(function(domo) {
+    const shopperNodes = props.shoppers.map(function(shopper) {
         return (
-            <div key={domo._id} className="domo">
-                <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 className="domoName">Name: {domo.name}</h3>
-                <h3 className="domoAge">Age: {domo.age}</h3>
-                <h3 className="domoLevel">Level: {domo.level}</h3>
-                <input className="levelUpDomo" type="submit" value="Level Up" onClick={LevelUpDomo} data-domoid={domo._id} csrf={_csrf} />
+            <div key={shopper._id} className="shopper">
+                <img src="/assets/img/shopperface.jpeg" alt="shopper face" className="shopperFace" />
+                <h3 className="shopperName">Name: {shopper.name}</h3>
+                <h3 className="shopperAge">Age: {shopper.age}</h3>
+                <h3 className="shopperMoney">Money: {shopper.money}</h3>
+                <input className="moneyUpShopper" type="submit" value="Money Up" onClick={MoneyUpShopper} data-shopperid={shopper._id} csrf={_csrf} />
             </div>
         );
     });
 
     return (
-        <div className="domoList">
-            {domoNodes}
+        <div className="shopperList">
+            {shopperNodes}
         </div>
     );
 };
 
 
-const loadDomosFromServer = () => {
+const loadShoppersFromServer = () => {
     sendAjax('GET', '/getShopper', null, (data) => {
         ReactDOM.render(
-            <DomoList domos={data.domos} />, document.querySelector("#domos")
+            <ShopperList shoppers={data.shoppers} />, document.querySelector("#shoppers")
         ); 
     });
 };
@@ -107,14 +93,14 @@ const setup = function(csrf) {
     _csrf = csrf;
     
     ReactDOM.render(
-        <DomoForm csrf={csrf} />, document.querySelector("#makeDomo")
+        <ShopperForm csrf={csrf} />, document.querySelector("#makeShopper")
     );
     
     ReactDOM.render(
-        <DomoList domos={[]} />, document.querySelector("#domos")
+        <ShopperList shoppers={[]} />, document.querySelector("#shoppers")
     );
     
-    loadDomosFromServer();
+    loadShoppersFromServer();
 };
 
 const getToken = () => {

@@ -1,2 +1,2 @@
 module.exports.Account = require('./Account.js');
-module.exports.Shopper = require('./Domo.js');
+module.exports.Shopper = require('./Shopper.js');

@@ -23,7 +23,7 @@ const ShopperSchema = new mongoose.Schema({
         required: true,
     },
     
-    level: {
+    money: {
         type: Number,
         min: 0,
         required: true,
@@ -44,17 +44,17 @@ const ShopperSchema = new mongoose.Schema({
 ShopperSchema.statics.toAPI = (doc) => ({
     name: doc.name,
     age: doc.age,
-    level: doc.level,
+    money: doc.money,
 });
 
 ShopperSchema.statics.findByOwner = (ownerId, callback) => {
     const search = {
         owner: convertId(ownerId),
     };
-    return ShopperModel.find(search).select('name age level').lean().exec(callback);
+    return ShopperModel.find(search).select('name age money').lean().exec(callback);
 };
 
-ShopperModel = mongoose.model('Domo', ShopperSchema);
+ShopperModel = mongoose.model('Shopper', ShopperSchema);
 
-module.exports.DomoModel = ShopperModel;
-module.exports.DomoSchema = ShopperSchema;
+module.exports.ShopperModel = ShopperModel;
+module.exports.ShopperSchema = ShopperSchema;

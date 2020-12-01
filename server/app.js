@@ -14,7 +14,7 @@ const csrf = require('csurf');
 const redis = require('redis');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
-const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/DomoMaker';
+const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/ShopperMaker';
 
 // setup mongoose options to use newer functionality
 const mongooseOptions = {
@@ -64,7 +64,7 @@ app.use(session({
     store: new RedisStore({
         client: redisClient,
     }),
-    secret: 'Domo Arigato',
+    secret: 'Shopper Arigato',
     resave: true,
     saveUninitialized: true,
     cookie: {

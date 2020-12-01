@@ -2,139 +2,127 @@
 
 var _csrf;
 
-var handleDomo = function handleDomo(e) {
+var handleShopper = function handleShopper(e) {
   e.preventDefault();
-  $("#domoMessage").animate({
+  $("#shopperMessage").animate({
     width: 'hide'
   }, 350);
 
-  if ($("#domoName").val() == '' || $("#domoAge").val() == '' || $("#domoLevel").val() == '') {
+  if ($("#shopperName").val() == '' || $("#shopperAge").val() == '' || $("#shopperMoney").val() == '') {
     handleError("RAWR! All fields are required");
     return false;
   }
 
-  sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
-    loadDomosFromServer();
+  sendAjax('POST', $("#shopperForm").attr("action"), $("#shopperForm").serialize(), function () {
+    loadShoppersFromServer();
   });
   return false;
 };
 
-var LevelUpDomo = function LevelUpDomo(e) {
-  e.preventDefault(); //console.log(_csrf);
-  //console.log("test");
-  //let newLevel = e.target.dataset.level + 1;
-  //
-  //let domoData = Domo.find(e.target.dataset.domoid);
-  //let domoData = {
-  //    id: e.target.dataset.domoid,
-  //    name: e.target.dataset.name,
-  //    age: e.target.dataset.age,
-  //    level: newLevel,
-  //};
-  //console.log(domoData);
-
-  var domoData = {
-    id: e.target.dataset.domoid,
+var MoneyUpShopper = function MoneyUpShopper(e) {
+  e.preventDefault();
+  var shopperData = {
+    id: e.target.dataset.shopperid,
     _csrf: _csrf
   };
-  sendAjax('POST', '/levelUp', domoData, loadDomosFromServer);
+  sendAjax('POST', '/moneyUp', shopperData, loadShoppersFromServer);
   return false;
 };
 
-var DomoForm = function DomoForm(props) {
+var ShopperForm = function ShopperForm(props) {
   return /*#__PURE__*/React.createElement("form", {
-    id: "domoForm",
-    onSubmit: handleDomo,
-    name: "domoForm",
+    id: "shopperForm",
+    onSubmit: handleShopper,
+    name: "shopperForm",
     action: "/maker",
     method: "POST",
-    className: "domoForm"
+    className: "shopperForm"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "name"
   }, "Name: "), /*#__PURE__*/React.createElement("input", {
-    id: "domoName",
+    id: "shopperName",
     type: "text",
     name: "name",
-    placeholder: "Domo Name"
+    placeholder: "Shopper Name"
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "age"
   }, "Age: "), /*#__PURE__*/React.createElement("input", {
-    id: "domoAge",
+    id: "shopperAge",
     type: "text",
     name: "age",
-    placeholder: "Domo Age"
+    placeholder: "Shopper Age"
   }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "level"
-  }, "Level: "), /*#__PURE__*/React.createElement("input", {
-    id: "domoLevel",
+    htmlFor: "money"
+  }, "Money: "), /*#__PURE__*/React.createElement("input", {
+    id: "shopperMoney",
     type: "text",
-    name: "level",
-    placeholder: "Domo Level"
+    name: "money",
+    placeholder: "Shopper Money"
   }), /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     name: "_csrf",
     value: props.csrf
   }), /*#__PURE__*/React.createElement("input", {
-    className: "makeDomoSubmit",
+    className: "makeShopperSubmit",
     type: "submit",
-    value: "Make Domo"
+    value: "Make Shopper"
   }));
 };
 
-var DomoList = function DomoList(props) {
-  if (props.domos.length === 0) {
+var ShopperList = function ShopperList(props) {
+  if (props.shoppers.length === 0) {
     return /*#__PURE__*/React.createElement("div", {
-      className: "domoList"
+      className: "shopperList"
     }, /*#__PURE__*/React.createElement("h3", {
-      className: "emptyDomo"
-    }, "No Domos yet"));
+      className: "emptyShopper"
+    }, "No Shoppers yet"));
   }
 
-  var domoNodes = props.domos.map(function (domo) {
+  var shopperNodes = props.shoppers.map(function (shopper) {
     return /*#__PURE__*/React.createElement("div", {
-      key: domo._id,
-      className: "domo"
+      key: shopper._id,
+      className: "shopper"
     }, /*#__PURE__*/React.createElement("img", {
-      src: "/assets/img/domoface.jpeg",
-      alt: "domo face",
-      className: "domoFace"
+      src: "/assets/img/shopperface.jpeg",
+      alt: "shopper face",
+      className: "shopperFace"
     }), /*#__PURE__*/React.createElement("h3", {
-      className: "domoName"
-    }, "Name: ", domo.name), /*#__PURE__*/React.createElement("h3", {
-      className: "domoAge"
-    }, "Age: ", domo.age), /*#__PURE__*/React.createElement("h3", {
-      className: "domoLevel"
-    }, "Level: ", domo.level), /*#__PURE__*/React.createElement("input", {
-      className: "levelUpDomo",
+      className: "shopperName"
+    }, "Name: ", shopper.name), /*#__PURE__*/React.createElement("h3", {
+      className: "shopperAge"
+    }, "Age: ", shopper.age), /*#__PURE__*/React.createElement("h3", {
+      className: "shopperMoney"
+    }, "Money: ", shopper.money), /*#__PURE__*/React.createElement("input", {
+      className: "moneyUpShopper",
       type: "submit",
-      value: "Level Up",
-      onClick: LevelUpDomo,
-      "data-domoid": domo._id,
+      value: "Money Up",
+      onClick: MoneyUpShopper,
+      "data-shopperid": shopper._id,
       csrf: _csrf
     }));
   });
   return /*#__PURE__*/React.createElement("div", {
-    className: "domoList"
-  }, domoNodes);
+    className: "shopperList"
+  }, shopperNodes);
 };
 
-var loadDomosFromServer = function loadDomosFromServer() {
+var loadShoppersFromServer = function loadShoppersFromServer() {
   sendAjax('GET', '/getShopper', null, function (data) {
-    ReactDOM.render( /*#__PURE__*/React.createElement(DomoList, {
-      domos: data.domos
-    }), document.querySelector("#domos"));
+    ReactDOM.render( /*#__PURE__*/React.createElement(ShopperList, {
+      shoppers: data.shoppers
+    }), document.querySelector("#shoppers"));
   });
 };
 
 var setup = function setup(csrf) {
   _csrf = csrf;
-  ReactDOM.render( /*#__PURE__*/React.createElement(DomoForm, {
+  ReactDOM.render( /*#__PURE__*/React.createElement(ShopperForm, {
     csrf: csrf
-  }), document.querySelector("#makeDomo"));
-  ReactDOM.render( /*#__PURE__*/React.createElement(DomoList, {
-    domos: []
-  }), document.querySelector("#domos"));
-  loadDomosFromServer();
+  }), document.querySelector("#makeShopper"));
+  ReactDOM.render( /*#__PURE__*/React.createElement(ShopperList, {
+    shoppers: []
+  }), document.querySelector("#shoppers"));
+  loadShoppersFromServer();
 };
 
 var getToken = function getToken() {
@@ -150,13 +138,13 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#domoMessage").animate({
+  $("#shopperMessage").animate({
     width: 'toggle'
   }, 350);
 };
 
 var redirect = function redirect(response) {
-  $("#domoMessage").animate({
+  $("#shopperMessage").animate({
     width: 'hide'
   }, 350);
   window.location = response.redirect;

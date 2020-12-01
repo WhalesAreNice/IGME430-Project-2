@@ -10,7 +10,7 @@ const router = (app) => {
     app.get('/logout', mid.requiresLogin, controllers.Account.logout);
     app.get('/maker', mid.requiresLogin, controllers.Shopper.makerPage);
     app.post('/maker', mid.requiresLogin, controllers.Shopper.make);
-    app.post('/levelUp', mid.requiresLogin, controllers.Shopper.levelUp);
+    app.post('/moneyUp', mid.requiresLogin, controllers.Shopper.moneyUp);
     app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 
