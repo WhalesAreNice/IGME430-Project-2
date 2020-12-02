@@ -1,7 +1,7 @@
 html, body {
     height: 100%;
-    width: 100%;
-    margin: 0;
+    width: 1200px;
+    margin: 0 auto;
     padding: 0;
     overflow-x: hidden;
 }
@@ -10,6 +10,7 @@ html, body {
     height: 40px;
     width: 40;
     padding-top: 5px;
+    margin-left:20px;
     float:left;
     border-radius: 8px;
 }
@@ -268,4 +269,46 @@ h3.shopperMoney {
 
 .shopper:last-child {
     margin-bottom:10px;
+}
+
+.itemDisplay {
+    display:inline-block;
+    background-color:palegreen;
+    width:200px;
+    margin:10 20;
+    padding:10 20;
+}
+
+
+.shoppingCategory{
+    display:block;
+    
+}
+
+#shopCategories{
+    width:250px;
+    background-color:pink;
+    float:left;
+}
+
+.shopItems{
+    width:900px;
+    background-color:skyblue;
+    text-align:center;
+    border-left:solid 5px black;
+    float:right;
+}
+
+#currentShopper{
+    margin:0 auto;
+    display:block;
+    background-color:mediumpurple;
+}
+
+.shopperInfoText{
+    display:inline-block;
+    padding: 10 20;
+    margin: 0 auto;
+    text-align:center;
+    
 }

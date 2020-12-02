@@ -1,5 +1,22 @@
 let _csrf;
 
+const categories = ['Shirts', 'Pants', 'Accesssories'];
+    const shirts = [{name:'White T-Shirt', price:20}, 
+                    {name:'Black T-Shirt', price:20}, 
+                    {name:'Red T-Shirt', price:20},
+                    {name:'White Cotton Hoodie', price:50},
+                    {name:'Black Cotton Hoodie', price:50},
+                    {name:'Red Cotton Hoodie', price:50},
+                    {name:'White Jacket', price:100},
+                    {name:'Black Jacket', price:100},
+                    {name:'Red Jacket', price:100}];
+    const pants = [{name:'Black Cargo', price:20}, 
+                   {name:'White Cargo', price:20}, 
+                   {name:'Red Cargo', price:20}];
+    const accessories = [{name:'Necklace', price:20}, 
+                         {name:'Bracelet', price:20}, 
+                         {name:'Ring', price:20}];
+
 const handleShopper = (e) => {
     e.preventDefault();
     
@@ -99,25 +116,37 @@ const StartShopping = (e) => {
 
 
 const ShoppingOptions = function(props) {
-    const categories = ['Shirts', 'Pants', 'Accesssories'];
-    const shirts = [{name:'White T-Shirt', price:200}, 
-                    {name:'Black T-Shirt', price:250}, 
-                    {name:'Red T-Shirt', price:300}];
-    const pants = [{name:'Black Cargo', price:200}, 
-                   {name:'White Cargo', price:250}, 
-                   {name:'Red Cargo', price:300}];
-    const accessories = [{name:'Necklace', price:200}, 
-                         {name:'Bracelet', price:250}, 
-                         {name:'Ring', price:300}];
-    
     let currentCategory = 'Shirts'; //change this when category is changed
+    let shopperInfo;
+    let categorySelect;
     let display; 
+    
+    let insideShopperInfo = [];
+    insideShopperInfo.push(<h2 class="shopperInfoText">Shopper's Name</h2>);
+    insideShopperInfo.push(<h2 class="shopperInfoText">Shopper's Money</h2>);
+    insideShopperInfo.push(<h2 class="shopperInfoText">Shopper's Cart</h2>);
+    shopperInfo = (
+        <div id="currentShopper">
+            {insideShopperInfo}
+        </div>
+    );
+    
+    let insideCategorySelect = [];
+    insideCategorySelect.push(<h2>Shopping Category</h2>);
+    for(let i = 0; i < categories.length; i++){
+        insideCategorySelect.push(<a class="shoppingCategory">{categories[i]}</a>);
+    }
+    categorySelect = (
+        <div id="shopCategories">
+            {insideCategorySelect}
+        </div>
+    );
     
     if(currentCategory == 'Shirts'){
         let insideDisplay = [];
         
         for(let i = 0; i < shirts.length; i++){
-            insideDisplay.push(<div class="shirt">
+            insideDisplay.push(<div class="itemDisplay shirt">
                 <img src="" alt=""/>//will add later
                 <h3>{shirts[i].name}</h3>
                 <h3>Price: {shirts[i].price}</h3>
@@ -126,15 +155,17 @@ const ShoppingOptions = function(props) {
         }
         
         display = (
-            <div id='shirts'>
-                {insideDisplay}
+            <div class="shopItems">
+                <div id='shirts'>
+                    {insideDisplay}
+                </div>
             </div>
         );
     }else if(currentCategory == 'Pants'){
         let insideDisplay = [];
         
         for(let i = 0; i < pants.length; i++){
-            insideDisplay.push(<div class="pant">
+            insideDisplay.push(<div class="itemDisplay pant">
                 <img src="" alt=""/>//will add later
                 <h3>{pants[i].name}</h3>
                 <h3>Price: {pants[i].price}</h3>
@@ -143,15 +174,17 @@ const ShoppingOptions = function(props) {
         }
         
         display = (
-            <div id='pants'>
-                {insideDisplay}
+            <div class="shopItems">
+                <div id='pants'>
+                    {insideDisplay}
+                </div>
             </div>
         );
     }else if(currentCategory == 'Accesssories'){
         let insideDisplay = [];
         
         for(let i = 0; i < accessories.length; i++){
-            insideDisplay.push(<div class="accessory">
+            insideDisplay.push(<div class="itemDisplay accessory">
                 <img src="" alt=""/>//will add later
                 <h3>{accessories[i].name}</h3>
                 <h3>Price: {accessories[i].price}</h3>
@@ -160,14 +193,18 @@ const ShoppingOptions = function(props) {
         }
         
         display = (
-            <div id='accessories'>
-                {insideDisplay}
+            <div class="shopItems">
+                <div id='accessories'>
+                    {insideDisplay}
+                </div>
             </div>
         );
     }
     
     const shoppingPage = (
-        <div id="shopCategories"> //put to left side of screen
+        <div id="ShopScreen">
+            {shopperInfo}
+            {categorySelect}
             {display}
         </div>
         
@@ -194,6 +231,16 @@ const loadShoppingOptions = () => {
         ReactDOM.render(
             <ShoppingOptions shoppers={data.shoppers} />, document.querySelector("#shoppingOptions")
         ); 
+        //ReactDOM.render(
+        //<div></div>, document.querySelector("#makeShopper")
+        //);
+        //
+        //ReactDOM.render(
+        //    <div></div>, document.querySelector("#shoppers")
+        //);
+        
+        ReactDOM.unmountComponentAtNode(document.querySelector("#makeShopper"));
+        ReactDOM.unmountComponentAtNode(document.querySelector("#shoppers"));
     });
 }
 
