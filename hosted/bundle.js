@@ -5,7 +5,9 @@ var _csrf;
 var categories = ['Shirts', 'Pants', 'Accesssories'];
 var shirts = [{
   name: 'White T-Shirt',
-  price: 20
+  price: 20,
+  src: '',
+  alt: 'test'
 }, {
   name: 'Black T-Shirt',
   price: 20
@@ -216,8 +218,8 @@ var ShoppingOptions = function ShoppingOptions(props) {
       insideDisplay.push( /*#__PURE__*/React.createElement("div", {
         "class": "itemDisplay shirt"
       }, /*#__PURE__*/React.createElement("img", {
-        src: "",
-        alt: ""
+        src: shirts[_i].src,
+        alt: shirts[_i].alt
       }), "//will add later", /*#__PURE__*/React.createElement("h3", null, shirts[_i].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", shirts[_i].price), /*#__PURE__*/React.createElement("input", {
         type: "submit",
         className: "addToCart",

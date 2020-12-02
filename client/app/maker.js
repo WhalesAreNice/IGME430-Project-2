@@ -1,7 +1,7 @@
 let _csrf;
 
 const categories = ['Shirts', 'Pants', 'Accesssories'];
-    const shirts = [{name:'White T-Shirt', price:20}, 
+    const shirts = [{name:'White T-Shirt', price:20, src:'', alt:'test'}, 
                     {name:'Black T-Shirt', price:20}, 
                     {name:'Red T-Shirt', price:20},
                     {name:'White Cotton Hoodie', price:50},
@@ -147,7 +147,7 @@ const ShoppingOptions = function(props) {
         
         for(let i = 0; i < shirts.length; i++){
             insideDisplay.push(<div class="itemDisplay shirt">
-                <img src="" alt=""/>//will add later
+                <img src={shirts[i].src} alt={shirts[i].alt}/>//will add later
                 <h3>{shirts[i].name}</h3>
                 <h3>Price: {shirts[i].price}</h3>
                 <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
