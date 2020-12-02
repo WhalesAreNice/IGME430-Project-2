@@ -39,6 +39,8 @@ const ShopperSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    
+    cart: []
 });
 
 ShopperSchema.statics.toAPI = (doc) => ({

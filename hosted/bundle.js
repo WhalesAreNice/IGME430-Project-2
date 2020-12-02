@@ -196,33 +196,52 @@ var ChangeCategory = function ChangeCategory(newCategory, shopperId) {
   return false;
 };
 
+var GetCurrentShopper = function GetCurrentShopper(e) {
+  e.preventDefault();
+  var shopperData = {
+    id: e.target.dataset.shopperid,
+    _csrf: _csrf
+  };
+  sendAjax('GET', '/getCurrentShopper', null, function (data) {});
+  return false;
+};
+
 var ShoppingOptions = function ShoppingOptions(props) {
   var currentCategory = props.category;
-  var shopperInfo;
+  var currentShopperInfo;
+  var shopperInfoDisplay;
   var categorySelect;
   var display;
   var insideShopperInfo = [];
   insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
-    "class": "shopperInfoText"
+    className: "shopperInfoText"
   }, "Shopper's Name"));
   insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
-    "class": "shopperInfoText"
+    className: "shopperInfoText"
   }, "Shopper's Money"));
   insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
-    "class": "shopperInfoText"
+    className: "shopperInfoText"
   }, "Shopper's Cart"));
-  shopperInfo = /*#__PURE__*/React.createElement("div", {
+  shopperInfoDisplay = /*#__PURE__*/React.createElement("div", {
     id: "currentShopper"
   }, insideShopperInfo);
   var insideCategorySelect = [];
   insideCategorySelect.push( /*#__PURE__*/React.createElement("h2", null, "Shopping Category"));
 
-  for (var i = 0; i < categories.length; i++) {
+  var _loop = function _loop(i) {
+    var CallChange = function CallChange() {
+      ChangeCategory(categories[i], props.shopperId);
+    };
+
     insideCategorySelect.push( /*#__PURE__*/React.createElement("a", {
-      "class": "shoppingCategory",
+      className: "shoppingCategory",
       href: "#",
-      onClick: ChangeCategory(categories[i], props.shopperId)
+      onClick: CallChange
     }, categories[i]));
+  };
+
+  for (var i = 0; i < categories.length; i++) {
+    _loop(i);
   }
 
   categorySelect = /*#__PURE__*/React.createElement("div", {
@@ -234,7 +253,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
 
     for (var _i = 0; _i < shirts.length; _i++) {
       insideDisplay.push( /*#__PURE__*/React.createElement("div", {
-        "class": "itemDisplay shirt"
+        className: "itemDisplay shirt"
       }, /*#__PURE__*/React.createElement("img", {
         src: shirts[_i].src,
         alt: shirts[_i].alt
@@ -249,7 +268,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
     }
 
     display = /*#__PURE__*/React.createElement("div", {
-      "class": "shopItems"
+      className: "shopItems"
     }, /*#__PURE__*/React.createElement("div", {
       id: "shirts"
     }, insideDisplay));
@@ -258,7 +277,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
 
     for (var _i2 = 0; _i2 < pants.length; _i2++) {
       _insideDisplay.push( /*#__PURE__*/React.createElement("div", {
-        "class": "itemDisplay pant"
+        className: "itemDisplay pant"
       }, /*#__PURE__*/React.createElement("img", {
         src: "",
         alt: ""
@@ -273,7 +292,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
     }
 
     display = /*#__PURE__*/React.createElement("div", {
-      "class": "shopItems"
+      className: "shopItems"
     }, /*#__PURE__*/React.createElement("div", {
       id: "pants"
     }, _insideDisplay));
@@ -282,7 +301,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
 
     for (var _i3 = 0; _i3 < accessories.length; _i3++) {
       _insideDisplay2.push( /*#__PURE__*/React.createElement("div", {
-        "class": "itemDisplay accessory"
+        className: "itemDisplay accessory"
       }, /*#__PURE__*/React.createElement("img", {
         src: "",
         alt: ""
@@ -297,7 +316,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
     }
 
     display = /*#__PURE__*/React.createElement("div", {
-      "class": "shopItems"
+      className: "shopItems"
     }, /*#__PURE__*/React.createElement("div", {
       id: "accessories"
     }, _insideDisplay2));
@@ -305,7 +324,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
 
   var shoppingPage = /*#__PURE__*/React.createElement("div", {
     id: "ShopScreen"
-  }, shopperInfo, categorySelect, display) //if chosen category is shirts
+  }, shopperInfoDisplay, categorySelect, display) //if chosen category is shirts
   //<div id="shirts">
   //    //for each shirt index
   //    <div class="shirt">
@@ -325,14 +344,7 @@ var loadShoppingOptions = function loadShoppingOptions(shopperId, category) {
     ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingOptions, {
       shopperId: shopperId,
       category: category
-    }), document.querySelector("#shoppingOptions")); //ReactDOM.render(
-    //<div></div>, document.querySelector("#makeShopper")
-    //);
-    //
-    //ReactDOM.render(
-    //    <div></div>, document.querySelector("#shoppers")
-    //);
-
+    }), document.querySelector("#shoppingOptions"));
     ReactDOM.unmountComponentAtNode(document.querySelector("#makeShopper"));
     ReactDOM.unmountComponentAtNode(document.querySelector("#shoppers"));
   });

@@ -136,17 +136,34 @@ const ChangeCategory = (newCategory, shopperId) => {
     return false;
 }
 
+const GetCurrentShopper = (e) => {
+    e.preventDefault();
+    
+    let shopperData = {
+        id: e.target.dataset.shopperid,
+        _csrf: _csrf,
+    }
+    
+    sendAjax('GET', '/getCurrentShopper', null, (data) => {
+        
+    });
+    return false;
+}
+
 const ShoppingOptions = function(props) {
     let currentCategory = props.category; 
-    let shopperInfo;
+    let currentShopperInfo;
+    let shopperInfoDisplay;
     let categorySelect;
     let display; 
     
     let insideShopperInfo = [];
-    insideShopperInfo.push(<h2 class="shopperInfoText">Shopper's Name</h2>);
-    insideShopperInfo.push(<h2 class="shopperInfoText">Shopper's Money</h2>);
-    insideShopperInfo.push(<h2 class="shopperInfoText">Shopper's Cart</h2>);
-    shopperInfo = (
+    
+    
+    insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Name</h2>);
+    insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Money</h2>);
+    insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Cart</h2>);
+    shopperInfoDisplay = (
         <div id="currentShopper">
             {insideShopperInfo}
         </div>
@@ -155,7 +172,11 @@ const ShoppingOptions = function(props) {
     let insideCategorySelect = [];
     insideCategorySelect.push(<h2>Shopping Category</h2>);
     for(let i = 0; i < categories.length; i++){
-        insideCategorySelect.push(<a class="shoppingCategory" href="#" onClick={ChangeCategory(categories[i], props.shopperId)}>{categories[i]}</a>);
+        const CallChange = () => {
+            ChangeCategory(categories[i], props.shopperId)
+        }
+        
+        insideCategorySelect.push(<a className="shoppingCategory" href="#" onClick={CallChange}>{categories[i]}</a>);
     }
     categorySelect = (
         <div id="shopCategories">
@@ -167,7 +188,7 @@ const ShoppingOptions = function(props) {
         let insideDisplay = [];
         
         for(let i = 0; i < shirts.length; i++){
-            insideDisplay.push(<div class="itemDisplay shirt">
+            insideDisplay.push(<div className="itemDisplay shirt">
                 <img src={shirts[i].src} alt={shirts[i].alt}/>//will add later
                 <h3>{shirts[i].name}</h3>
                 <h3>Price: {shirts[i].price}</h3>
@@ -176,7 +197,7 @@ const ShoppingOptions = function(props) {
         }
         
         display = (
-            <div class="shopItems">
+            <div className="shopItems">
                 <div id='shirts'>
                     {insideDisplay}
                 </div>
@@ -186,7 +207,7 @@ const ShoppingOptions = function(props) {
         let insideDisplay = [];
         
         for(let i = 0; i < pants.length; i++){
-            insideDisplay.push(<div class="itemDisplay pant">
+            insideDisplay.push(<div className="itemDisplay pant">
                 <img src="" alt=""/>//will add later
                 <h3>{pants[i].name}</h3>
                 <h3>Price: {pants[i].price}</h3>
@@ -195,7 +216,7 @@ const ShoppingOptions = function(props) {
         }
         
         display = (
-            <div class="shopItems">
+            <div className="shopItems">
                 <div id='pants'>
                     {insideDisplay}
                 </div>
@@ -205,7 +226,7 @@ const ShoppingOptions = function(props) {
         let insideDisplay = [];
         
         for(let i = 0; i < accessories.length; i++){
-            insideDisplay.push(<div class="itemDisplay accessory">
+            insideDisplay.push(<div className="itemDisplay accessory">
                 <img src="" alt=""/>//will add later
                 <h3>{accessories[i].name}</h3>
                 <h3>Price: {accessories[i].price}</h3>
@@ -214,7 +235,7 @@ const ShoppingOptions = function(props) {
         }
         
         display = (
-            <div class="shopItems">
+            <div className="shopItems">
                 <div id='accessories'>
                     {insideDisplay}
                 </div>
@@ -224,7 +245,7 @@ const ShoppingOptions = function(props) {
     
     const shoppingPage = (
         <div id="ShopScreen">
-            {shopperInfo}
+            {shopperInfoDisplay}
             {categorySelect}
             {display}
         </div>
@@ -252,13 +273,6 @@ const loadShoppingOptions = (shopperId, category) => {
         ReactDOM.render(
             <ShoppingOptions shopperId={shopperId} category={category} />, document.querySelector("#shoppingOptions")
         ); 
-        //ReactDOM.render(
-        //<div></div>, document.querySelector("#makeShopper")
-        //);
-        //
-        //ReactDOM.render(
-        //    <div></div>, document.querySelector("#shoppers")
-        //);
         
         ReactDOM.unmountComponentAtNode(document.querySelector("#makeShopper"));
         ReactDOM.unmountComponentAtNode(document.querySelector("#shoppers"));

@@ -14,7 +14,7 @@ const makerPage = (req, res) => {
 
 const makeShopper = (req, res) => {
     if (!req.body.name || !req.body.age || !req.body.money) {
-        return res.status(400).json({ error: 'RAWR! Name, age, and money are required' });
+        return res.status(400).json({ error: 'Name, age, and money are required' });
     }
 
     const shopperData = {
@@ -55,6 +55,31 @@ const getShoppers = (request, response) => {
         return res.json({ shoppers: docs });
     });
 };
+
+const getCurrentShopper = (req, res) => {
+    Shopper.ShopperModel.findById(req.body.id, (err, docs) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json({error: 'An error occured' });
+        }
+        if(!docs){
+            console.log("fail");
+            return res.json({error: 'no shopper found' });
+        }
+        
+        const shopperData = docs;
+        
+        const shopperPromise = shopperData.save();
+        
+        shopperPromise.then(() => res.json({redirect: '/maker' }));
+        
+        shopperPromise.catch((errr) => {
+            console.log(errr);
+            return res.status(400).json({error: 'An error occured' });
+        });
+        return shopperPromise;
+    });
+}
 
 const moneyUpShopper = (req, res) => {
     //console.log(req.body.id);
@@ -99,7 +124,7 @@ const StartShopping = (req, res) => {
         }
         
         const shopperData = docs;
-        //shopperData.money+= 10;
+        shopperData.money+= 10;
         
         const shopperPromise = shopperData.save();
         
@@ -118,3 +143,4 @@ module.exports.getShopper = getShoppers;
 module.exports.make = makeShopper;
 module.exports.moneyUp = moneyUpShopper;
 module.exports.startShopping = StartShopping;
+module.exports.getCurrentShopper = getCurrentShopper;
