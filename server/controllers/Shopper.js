@@ -86,18 +86,35 @@ const moneyUpShopper = (req, res) => {
     
 }
 
-//const StartShopping = (req, res) => {
-//    Shopper.ShopperModel.findByOwner(req.session.account._id, (err, docs) => {
-//        if (err) {
-//            console.log(err);
-//            return res.status(400).json({ error: 'An error occurred' });
-//        }
-//        return res.render('shop', { csrfToken: req.csrfToken(), shoppers: docs });
-//    });
-//}
+const StartShopping = (req, res) => {
+    Shopper.ShopperModel.findById(req.body.id, (err, docs) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json({error: 'An error occured' });
+        }
+        //console.log(docs);
+        if(!docs){
+            console.log("fail");
+            return res.json({error: 'no shopper found' });
+        }
+        
+        const shopperData = docs;
+        //shopperData.money+= 10;
+        
+        const shopperPromise = shopperData.save();
+        
+        shopperPromise.then(() => res.json({redirect: '/maker' }));
+        
+        shopperPromise.catch((errr) => {
+            console.log(errr);
+            return res.status(400).json({error: 'An error occured' });
+        });
+        return shopperPromise;
+    });
+}
 
 module.exports.makerPage = makerPage;
 module.exports.getShopper = getShoppers;
 module.exports.make = makeShopper;
 module.exports.moneyUp = moneyUpShopper;
-//module.exports.startShopping = StartShopping;
+module.exports.startShopping = StartShopping;

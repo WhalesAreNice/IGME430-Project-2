@@ -67,7 +67,7 @@ const ShopperList = function(props) {
                 <h3 className="shopperAge">Age: {shopper.age}</h3>
                 <h3 className="shopperMoney">Money: {shopper.money}</h3>
                 <input className="moneyUpShopper" type="submit" value="Money Up" onClick={MoneyUpShopper} data-shopperid={shopper._id} csrf={_csrf} />
-                <input className="startShopping" type="submit" value="Start Shopping"  data-onClick={StartShopping} shopperid={shopper._id} csrf={_csrf} />
+                <input className="startShopping" type="submit" value="Start Shopping"  onClick={StartShopping} data-shopperid={shopper._id} csrf={_csrf} />
                 
             </div>
         );
@@ -78,6 +78,11 @@ const ShopperList = function(props) {
             {shopperNodes}
         </div>
     );
+};
+
+const AddToCart = (e) => {
+    //adds the selected item to cart of the shopper
+    //reload the same shopperoptions
 };
 
 const StartShopping = (e) => {
@@ -95,13 +100,75 @@ const StartShopping = (e) => {
 
 const ShoppingOptions = function(props) {
     const categories = ['Shirts', 'Pants', 'Accesssories'];
-    const shirts = ['White T-Shirt', 'Black T-Shirt', 'Red T-Shirt'];
-    const pants = ['Black Cargo', 'White Cargo', 'Red Cargo'];
-    const accessories = ['Necklace', 'Ring', 'Bracelet'];
+    const shirts = [{name:'White T-Shirt', price:200}, 
+                    {name:'Black T-Shirt', price:250}, 
+                    {name:'Red T-Shirt', price:300}];
+    const pants = [{name:'Black Cargo', price:200}, 
+                   {name:'White Cargo', price:250}, 
+                   {name:'Red Cargo', price:300}];
+    const accessories = [{name:'Necklace', price:200}, 
+                         {name:'Bracelet', price:250}, 
+                         {name:'Ring', price:300}];
+    
+    let currentCategory = 'Shirts'; //change this when category is changed
+    let display; 
+    
+    if(currentCategory == 'Shirts'){
+        let insideDisplay = [];
+        
+        for(let i = 0; i < shirts.length; i++){
+            insideDisplay.push(<div class="shirt">
+                <img src="" alt=""/>//will add later
+                <h3>{shirts[i].name}</h3>
+                <h3>Price: {shirts[i].price}</h3>
+                <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
+            </div>)
+        }
+        
+        display = (
+            <div id='shirts'>
+                {insideDisplay}
+            </div>
+        );
+    }else if(currentCategory == 'Pants'){
+        let insideDisplay = [];
+        
+        for(let i = 0; i < pants.length; i++){
+            insideDisplay.push(<div class="pant">
+                <img src="" alt=""/>//will add later
+                <h3>{pants[i].name}</h3>
+                <h3>Price: {pants[i].price}</h3>
+                <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
+            </div>)
+        }
+        
+        display = (
+            <div id='pants'>
+                {insideDisplay}
+            </div>
+        );
+    }else if(currentCategory == 'Accesssories'){
+        let insideDisplay = [];
+        
+        for(let i = 0; i < accessories.length; i++){
+            insideDisplay.push(<div class="accessory">
+                <img src="" alt=""/>//will add later
+                <h3>{accessories[i].name}</h3>
+                <h3>Price: {accessories[i].price}</h3>
+                <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
+            </div>)
+        }
+        
+        display = (
+            <div id='accessories'>
+                {insideDisplay}
+            </div>
+        );
+    }
     
     const shoppingPage = (
         <div id="shopCategories"> //put to left side of screen
-            {categories}
+            {display}
         </div>
         
         //if chosen category is shirts

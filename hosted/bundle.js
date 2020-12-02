@@ -103,14 +103,18 @@ var ShopperList = function ShopperList(props) {
       className: "startShopping",
       type: "submit",
       value: "Start Shopping",
-      "data-onClick": StartShopping,
-      shopperid: shopper._id,
+      onClick: StartShopping,
+      "data-shopperid": shopper._id,
       csrf: _csrf
     }));
   });
   return /*#__PURE__*/React.createElement("div", {
     className: "shopperList"
   }, shopperNodes);
+};
+
+var AddToCart = function AddToCart(e) {//adds the selected item to cart of the shopper
+  //reload the same shopperoptions
 };
 
 var StartShopping = function StartShopping(e) {
@@ -125,12 +129,111 @@ var StartShopping = function StartShopping(e) {
 
 var ShoppingOptions = function ShoppingOptions(props) {
   var categories = ['Shirts', 'Pants', 'Accesssories'];
-  var shirts = ['White T-Shirt', 'Black T-Shirt', 'Red T-Shirt'];
-  var pants = ['Black Cargo', 'White Cargo', 'Red Cargo'];
-  var accessories = ['Necklace', 'Ring', 'Bracelet'];
+  var shirts = [{
+    name: 'White T-Shirt',
+    price: 200
+  }, {
+    name: 'Black T-Shirt',
+    price: 250
+  }, {
+    name: 'Red T-Shirt',
+    price: 300
+  }];
+  var pants = [{
+    name: 'Black Cargo',
+    price: 200
+  }, {
+    name: 'White Cargo',
+    price: 250
+  }, {
+    name: 'Red Cargo',
+    price: 300
+  }];
+  var accessories = [{
+    name: 'Necklace',
+    price: 200
+  }, {
+    name: 'Bracelet',
+    price: 250
+  }, {
+    name: 'Ring',
+    price: 300
+  }];
+  var currentCategory = 'Shirts'; //change this when category is changed
+
+  var display;
+
+  if (currentCategory == 'Shirts') {
+    var insideDisplay = [];
+
+    for (var i = 0; i < shirts.length; i++) {
+      insideDisplay.push( /*#__PURE__*/React.createElement("div", {
+        "class": "shirt"
+      }, /*#__PURE__*/React.createElement("img", {
+        src: "",
+        alt: ""
+      }), "//will add later", /*#__PURE__*/React.createElement("h3", null, shirts[i].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", shirts[i].price), /*#__PURE__*/React.createElement("input", {
+        type: "submit",
+        className: "addToCart",
+        value: "Add to Cart",
+        onClick: AddToCart,
+        "data-shopperid": shopper._id,
+        csrf: _csrf
+      })));
+    }
+
+    display = /*#__PURE__*/React.createElement("div", {
+      id: "shirts"
+    }, insideDisplay);
+  } else if (currentCategory == 'Pants') {
+    var _insideDisplay = [];
+
+    for (var _i = 0; _i < pants.length; _i++) {
+      _insideDisplay.push( /*#__PURE__*/React.createElement("div", {
+        "class": "pant"
+      }, /*#__PURE__*/React.createElement("img", {
+        src: "",
+        alt: ""
+      }), "//will add later", /*#__PURE__*/React.createElement("h3", null, pants[_i].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", pants[_i].price), /*#__PURE__*/React.createElement("input", {
+        type: "submit",
+        className: "addToCart",
+        value: "Add to Cart",
+        onClick: AddToCart,
+        "data-shopperid": shopper._id,
+        csrf: _csrf
+      })));
+    }
+
+    display = /*#__PURE__*/React.createElement("div", {
+      id: "pants"
+    }, _insideDisplay);
+  } else if (currentCategory == 'Accesssories') {
+    var _insideDisplay2 = [];
+
+    for (var _i2 = 0; _i2 < accessories.length; _i2++) {
+      _insideDisplay2.push( /*#__PURE__*/React.createElement("div", {
+        "class": "accessory"
+      }, /*#__PURE__*/React.createElement("img", {
+        src: "",
+        alt: ""
+      }), "//will add later", /*#__PURE__*/React.createElement("h3", null, accessories[_i2].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", accessories[_i2].price), /*#__PURE__*/React.createElement("input", {
+        type: "submit",
+        className: "addToCart",
+        value: "Add to Cart",
+        onClick: AddToCart,
+        "data-shopperid": shopper._id,
+        csrf: _csrf
+      })));
+    }
+
+    display = /*#__PURE__*/React.createElement("div", {
+      id: "accessories"
+    }, _insideDisplay2);
+  }
+
   var shoppingPage = /*#__PURE__*/React.createElement("div", {
     id: "shopCategories"
-  }, " //put to left side of screen", categories) //if chosen category is shirts
+  }, " //put to left side of screen", display) //if chosen category is shirts
   //<div id="shirts">
   //    //for each shirt index
   //    <div class="shirt">

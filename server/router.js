@@ -11,7 +11,7 @@ const router = (app) => {
     app.get('/maker', mid.requiresLogin, controllers.Shopper.makerPage);
     app.post('/maker', mid.requiresLogin, controllers.Shopper.make);
     app.post('/moneyUp', mid.requiresLogin, controllers.Shopper.moneyUp);
-    //app.post('/shop', mid.requiresLogin, controllers.Shopper.startShopping);
+    app.post('/shop', mid.requiresLogin, controllers.Shopper.startShopping);
     app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 
