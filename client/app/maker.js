@@ -110,13 +110,34 @@ const StartShopping = (e) => {
         _csrf: _csrf,
     }
     
-    sendAjax('POST', '/shop', shopperData, loadShoppingOptions);
+    let category = 'Shirts'; //default it to shirts
+    
+    
+    sendAjax('POST', '/shop', shopperData, () => {
+        loadShoppingOptions(shopperData.id, category)
+    });
     return false;
 };
 
+const ChangeCategory = (newCategory, shopperId) => {
+    e.preventDefault();
+    
+    let shopperData = {
+        id: e.target.dataset.shopperid,
+        _csrf: _csrf,
+    }
+    
+    let category = newCategory; 
+    
+    
+    sendAjax('POST', '/shop', shopperData, () => {
+        loadShoppingOptions(shopperData.id, category)
+    });
+    return false;
+}
 
 const ShoppingOptions = function(props) {
-    let currentCategory = 'Shirts'; //change this when category is changed
+    let currentCategory = props.category; 
     let shopperInfo;
     let categorySelect;
     let display; 
@@ -134,7 +155,7 @@ const ShoppingOptions = function(props) {
     let insideCategorySelect = [];
     insideCategorySelect.push(<h2>Shopping Category</h2>);
     for(let i = 0; i < categories.length; i++){
-        insideCategorySelect.push(<a class="shoppingCategory">{categories[i]}</a>);
+        insideCategorySelect.push(<a class="shoppingCategory" href="#" onClick={ChangeCategory(categories[i], props.shopperId)}>{categories[i]}</a>);
     }
     categorySelect = (
         <div id="shopCategories">
@@ -226,10 +247,10 @@ const ShoppingOptions = function(props) {
     );
 };
 
-const loadShoppingOptions = () => {
+const loadShoppingOptions = (shopperId, category) => {
     sendAjax('GET', '/getShopper', null, (data) => {
         ReactDOM.render(
-            <ShoppingOptions shoppers={data.shoppers} />, document.querySelector("#shoppingOptions")
+            <ShoppingOptions shopperId={shopperId} category={category} />, document.querySelector("#shoppingOptions")
         ); 
         //ReactDOM.render(
         //<div></div>, document.querySelector("#makeShopper")

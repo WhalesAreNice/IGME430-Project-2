@@ -175,13 +175,29 @@ var StartShopping = function StartShopping(e) {
     id: e.target.dataset.shopperid,
     _csrf: _csrf
   };
-  sendAjax('POST', '/shop', shopperData, loadShoppingOptions);
+  var category = 'Shirts'; //default it to shirts
+
+  sendAjax('POST', '/shop', shopperData, function () {
+    loadShoppingOptions(shopperData.id, category);
+  });
+  return false;
+};
+
+var ChangeCategory = function ChangeCategory(newCategory, shopperId) {
+  e.preventDefault();
+  var shopperData = {
+    id: e.target.dataset.shopperid,
+    _csrf: _csrf
+  };
+  var category = newCategory;
+  sendAjax('POST', '/shop', shopperData, function () {
+    loadShoppingOptions(shopperData.id, category);
+  });
   return false;
 };
 
 var ShoppingOptions = function ShoppingOptions(props) {
-  var currentCategory = 'Shirts'; //change this when category is changed
-
+  var currentCategory = props.category;
   var shopperInfo;
   var categorySelect;
   var display;
@@ -203,7 +219,9 @@ var ShoppingOptions = function ShoppingOptions(props) {
 
   for (var i = 0; i < categories.length; i++) {
     insideCategorySelect.push( /*#__PURE__*/React.createElement("a", {
-      "class": "shoppingCategory"
+      "class": "shoppingCategory",
+      href: "#",
+      onClick: ChangeCategory(categories[i], props.shopperId)
     }, categories[i]));
   }
 
@@ -302,10 +320,11 @@ var ShoppingOptions = function ShoppingOptions(props) {
   }, shoppingPage);
 };
 
-var loadShoppingOptions = function loadShoppingOptions() {
+var loadShoppingOptions = function loadShoppingOptions(shopperId, category) {
   sendAjax('GET', '/getShopper', null, function (data) {
     ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingOptions, {
-      shoppers: data.shoppers
+      shopperId: shopperId,
+      category: category
     }), document.querySelector("#shoppingOptions")); //ReactDOM.render(
     //<div></div>, document.querySelector("#makeShopper")
     //);
