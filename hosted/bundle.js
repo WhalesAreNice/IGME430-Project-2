@@ -184,14 +184,14 @@ var StartShopping = function StartShopping(e) {
 };
 
 var ChangeCategory = function ChangeCategory(newCategory, shopperId) {
-  e.preventDefault();
+  //e.preventDefault();
   var shopperData = {
-    id: e.target.dataset.shopperid,
+    id: shopperId,
     _csrf: _csrf
   };
   var category = newCategory;
   sendAjax('POST', '/shop', shopperData, function () {
-    loadShoppingOptions(shopperData.id, category);
+    loadShoppingOptions(shopperId, category);
   });
   return false;
 };

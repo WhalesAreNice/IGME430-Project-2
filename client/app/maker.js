@@ -120,10 +120,10 @@ const StartShopping = (e) => {
 };
 
 const ChangeCategory = (newCategory, shopperId) => {
-    e.preventDefault();
+    //e.preventDefault();
     
     let shopperData = {
-        id: e.target.dataset.shopperid,
+        id: shopperId,
         _csrf: _csrf,
     }
     
@@ -131,7 +131,7 @@ const ChangeCategory = (newCategory, shopperId) => {
     
     
     sendAjax('POST', '/shop', shopperData, () => {
-        loadShoppingOptions(shopperData.id, category)
+        loadShoppingOptions(shopperId, category)
     });
     return false;
 }
