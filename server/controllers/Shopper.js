@@ -57,7 +57,7 @@ const getShoppers = (request, response) => {
 };
 
 const getCurrentShopper = (req, res) => {
-    Shopper.ShopperModel.findById(req.body.id, (err, doc) => {
+    Shopper.ShopperModel.findById(req.query.id, (err, doc) => {
         if(err){
             console.log(err);
             return res.status(400).json({error: 'An error occured' });
@@ -98,7 +98,34 @@ const moneyUpShopper = (req, res) => {
         });
         return shopperPromise;
     });
-    
+}
+
+const AddToCart = (req, res) => {
+    Shopper.ShopperModel.findById(req.body.id, (err, docs) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json({error: 'An error occured' });
+        }
+        //console.log(docs);
+        if(!docs){
+            console.log("fail");
+            return res.json({error: 'no shopper found' });
+        }
+        
+        const shopperData = docs;
+        shopperData.cart = req.body.cart;
+        console.log(shopperData);
+        
+        const shopperPromise = shopperData.save();
+        
+        shopperPromise.then(() => res.json({redirect: '/maker' }));
+        
+        shopperPromise.catch((errr) => {
+            console.log(errr);
+            return res.status(400).json({error: 'An error occured' });
+        });
+        return shopperPromise;
+    });
 }
 
 const StartShopping = (req, res) => {
@@ -114,7 +141,7 @@ const StartShopping = (req, res) => {
         }
         
         const shopperData = docs;
-        shopperData.money+= 10;
+        //shopperData.money+= 10;
         
         const shopperPromise = shopperData.save();
         
@@ -134,3 +161,4 @@ module.exports.make = makeShopper;
 module.exports.moneyUp = moneyUpShopper;
 module.exports.startShopping = StartShopping;
 module.exports.getCurrentShopper = getCurrentShopper;
+module.exports.addToCart = AddToCart;

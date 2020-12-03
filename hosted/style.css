@@ -303,9 +303,14 @@ h3.shopperMoney {
 }
 
 #currentShopper{
-    margin:0 auto;
     display:block;
     background-color:mediumpurple;
+}
+
+#currentShopperFloatBox{
+    margin:0 auto;
+    display:inline-block;
+    background-color:red;
 }
 
 .shopperInfoText{
@@ -313,7 +318,7 @@ h3.shopperMoney {
     padding: 10 20;
     margin: 0 auto;
     text-align:center;
-    
+    vertical-align: middle;
 }
 
 .shoppingCartItem{

@@ -181,10 +181,6 @@ var ShopperList = function ShopperList(props) {
   }, shopperNodes);
 };
 
-var AddToCart = function AddToCart(e) {//adds the selected item to cart of the shopper
-  //reload the same shopperoptions
-};
-
 var StartShopping = function StartShopping(e) {
   e.preventDefault();
   var shopperData = {
@@ -223,15 +219,12 @@ var GetCurrentShopper = function GetCurrentShopper(shopperId, category) {
       shopperData: data.shopper,
       category: category
     }), document.querySelector("#shoppingOptions")); //for now load all the reactDOMs to screen just to see
-
-    ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingCart, {
-      shopperData: data.shopper,
-      category: category
-    }), document.querySelector("#shoppingCart"));
-    ReactDOM.render( /*#__PURE__*/React.createElement(PaymentPage, {
-      shopperData: data.shopper,
-      category: category
-    }), document.querySelector("#paymentPage"));
+    //ReactDOM.render(
+    //    <ShoppingCart shopperData={data.shopper} category={category} />, document.querySelector("#shoppingCart")
+    //); 
+    //ReactDOM.render(
+    //    <PaymentPage shopperData={data.shopper} category={category} />, document.querySelector("#paymentPage")
+    //); 
   });
   return false;
 };
@@ -243,20 +236,29 @@ var ShoppingOptions = function ShoppingOptions(props) {
   var categorySelect;
   var display;
   var insideShopperInfo = [];
-  currentShopperInfo = props.shopperData;
-  console.log(props);
+  currentShopperInfo = props.shopperData; //console.log(props.shopperData);
+
+  var ChangeToShoppingCart = function ChangeToShoppingCart() {
+    loadShoppingCart(currentShopperInfo, currentCategory);
+  };
+
   insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
     className: "shopperInfoText"
-  }, "Shopper's Name"));
+  }, currentShopperInfo.name));
   insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
     className: "shopperInfoText"
-  }, "Shopper's Money"));
-  insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
-    className: "shopperInfoText"
-  }, "Shopper's Cart"));
+  }, "Available Money: ", currentShopperInfo.money));
+  insideShopperInfo.push( /*#__PURE__*/React.createElement("img", {
+    className: "shopperInfoText",
+    src: "/assets/img/shopping-bag.png",
+    alt: "shopping bag",
+    onClick: ChangeToShoppingCart
+  }));
   shopperInfoDisplay = /*#__PURE__*/React.createElement("div", {
     id: "currentShopper"
-  }, insideShopperInfo);
+  }, /*#__PURE__*/React.createElement("div", {
+    id: "currentShopperFloatBox"
+  }, insideShopperInfo));
   var insideCategorySelect = [];
   insideCategorySelect.push( /*#__PURE__*/React.createElement("h2", null, "Shopping Category"));
 
@@ -283,7 +285,11 @@ var ShoppingOptions = function ShoppingOptions(props) {
   if (currentCategory == 'Shirts') {
     var insideDisplay = [];
 
-    for (var _i = 0; _i < shirts.length; _i++) {
+    var _loop2 = function _loop2(_i) {
+      var CallChange = function CallChange() {
+        AddToCart(currentShopperInfo, currentCategory, shirts[_i]);
+      };
+
       insideDisplay.push( /*#__PURE__*/React.createElement("div", {
         className: "itemDisplay shirt"
       }, /*#__PURE__*/React.createElement("img", {
@@ -293,10 +299,14 @@ var ShoppingOptions = function ShoppingOptions(props) {
         type: "submit",
         className: "addToCart",
         value: "Add to Cart",
-        onClick: AddToCart,
+        onClick: CallChange,
         "data-shopperid": shopper._id,
         csrf: _csrf
       })));
+    };
+
+    for (var _i = 0; _i < shirts.length; _i++) {
+      _loop2(_i);
     }
 
     display = /*#__PURE__*/React.createElement("div", {
@@ -307,7 +317,11 @@ var ShoppingOptions = function ShoppingOptions(props) {
   } else if (currentCategory == 'Pants') {
     var _insideDisplay = [];
 
-    for (var _i2 = 0; _i2 < pants.length; _i2++) {
+    var _loop3 = function _loop3(_i2) {
+      var CallChange = function CallChange() {
+        AddToCart(currentShopperInfo, currentCategory, pants[_i2]);
+      };
+
       _insideDisplay.push( /*#__PURE__*/React.createElement("div", {
         className: "itemDisplay pant"
       }, /*#__PURE__*/React.createElement("img", {
@@ -317,10 +331,14 @@ var ShoppingOptions = function ShoppingOptions(props) {
         type: "submit",
         className: "addToCart",
         value: "Add to Cart",
-        onClick: AddToCart,
+        onClick: CallChange,
         "data-shopperid": shopper._id,
         csrf: _csrf
       })));
+    };
+
+    for (var _i2 = 0; _i2 < pants.length; _i2++) {
+      _loop3(_i2);
     }
 
     display = /*#__PURE__*/React.createElement("div", {
@@ -331,7 +349,11 @@ var ShoppingOptions = function ShoppingOptions(props) {
   } else if (currentCategory == 'Accesssories') {
     var _insideDisplay2 = [];
 
-    for (var _i3 = 0; _i3 < accessories.length; _i3++) {
+    var _loop4 = function _loop4(_i3) {
+      var CallChange = function CallChange() {
+        AddToCart(currentShopperInfo, currentCategory, accessories[_i3]);
+      };
+
       _insideDisplay2.push( /*#__PURE__*/React.createElement("div", {
         className: "itemDisplay accessory"
       }, /*#__PURE__*/React.createElement("img", {
@@ -341,10 +363,14 @@ var ShoppingOptions = function ShoppingOptions(props) {
         type: "submit",
         className: "addToCart",
         value: "Add to Cart",
-        onClick: AddToCart,
+        onClick: CallChange,
         "data-shopperid": shopper._id,
         csrf: _csrf
       })));
+    };
+
+    for (var _i3 = 0; _i3 < accessories.length; _i3++) {
+      _loop4(_i3);
     }
 
     display = /*#__PURE__*/React.createElement("div", {
@@ -371,7 +397,27 @@ var ShoppingOptions = function ShoppingOptions(props) {
   }, shoppingPage);
 };
 
-var loadShoppingCart = function loadShoppingCart() {};
+var AddToCart = function AddToCart(shopperData, category, item) {
+  //adds the selected item to cart of the shopper
+  var tempShopper = shopperData;
+  tempShopper.cart.push(item);
+  tempShopper._csrf = _csrf; //console.log(tempShopper);
+  //reload the same shopperoptions
+
+  sendAjax('POST', '/addToCart', tempShopper, function (data) {
+    GetCurrentShopper(tempShopper.id, category);
+  });
+};
+
+var loadShoppingCart = function loadShoppingCart(shopperData, category) {
+  sendAjax('GET', '/getCurrentShopper', shopperData, function (data) {
+    ReactDOM.unmountComponentAtNode(document.querySelector("#shoppingOptions"));
+    ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingCart, {
+      shopperData: data.shopper,
+      category: category
+    }), document.querySelector("#shoppingCart"));
+  });
+};
 
 var ShoppingCart = function ShoppingCart(props) {
   var shoppingList;

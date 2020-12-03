@@ -97,10 +97,7 @@ const ShopperList = function(props) {
     );
 };
 
-const AddToCart = (e) => {
-    //adds the selected item to cart of the shopper
-    //reload the same shopperoptions
-};
+
 
 const StartShopping = (e) => {
     e.preventDefault();
@@ -150,12 +147,12 @@ const GetCurrentShopper = (shopperId, category) => {
         ); 
         
         //for now load all the reactDOMs to screen just to see
-        ReactDOM.render(
-            <ShoppingCart shopperData={data.shopper} category={category} />, document.querySelector("#shoppingCart")
-        ); 
-        ReactDOM.render(
-            <PaymentPage shopperData={data.shopper} category={category} />, document.querySelector("#paymentPage")
-        ); 
+        //ReactDOM.render(
+        //    <ShoppingCart shopperData={data.shopper} category={category} />, document.querySelector("#shoppingCart")
+        //); 
+        //ReactDOM.render(
+        //    <PaymentPage shopperData={data.shopper} category={category} />, document.querySelector("#paymentPage")
+        //); 
         
     });
     
@@ -173,14 +170,20 @@ const ShoppingOptions = function(props) {
     let insideShopperInfo = [];
     
     currentShopperInfo = props.shopperData;
-    console.log(props);
+    //console.log(props.shopperData);
     
-    insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Name</h2>);
-    insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Money</h2>);
-    insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Cart</h2>);
+    const ChangeToShoppingCart = () => {
+        loadShoppingCart(currentShopperInfo, currentCategory)
+    }
+    
+    insideShopperInfo.push(<h2 className="shopperInfoText">{currentShopperInfo.name}</h2>);
+    insideShopperInfo.push(<h2 className="shopperInfoText">Available Money: {currentShopperInfo.money}</h2>);
+    insideShopperInfo.push(<img className="shopperInfoText" src="/assets/img/shopping-bag.png" alt="shopping bag" onClick={ChangeToShoppingCart}></img>);
     shopperInfoDisplay = (
         <div id="currentShopper">
-            {insideShopperInfo}
+           <div id="currentShopperFloatBox">
+               {insideShopperInfo}
+           </div>
         </div>
     );
     
@@ -203,11 +206,15 @@ const ShoppingOptions = function(props) {
         let insideDisplay = [];
         
         for(let i = 0; i < shirts.length; i++){
+            const CallChange = () => {
+                AddToCart(currentShopperInfo, currentCategory, shirts[i])
+            }
+            
             insideDisplay.push(<div className="itemDisplay shirt">
                 <img src={shirts[i].src} alt={shirts[i].alt}/>
                 <h3>{shirts[i].name}</h3>
                 <h3>Price: {shirts[i].price}</h3>
-                <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
+                <input type="submit" className="addToCart" value="Add to Cart" onClick={CallChange} data-shopperid={shopper._id} csrf={_csrf} />
             </div>)
         }
         
@@ -222,11 +229,15 @@ const ShoppingOptions = function(props) {
         let insideDisplay = [];
         
         for(let i = 0; i < pants.length; i++){
+            const CallChange = () => {
+                AddToCart(currentShopperInfo, currentCategory, pants[i])
+            }
+            
             insideDisplay.push(<div className="itemDisplay pant">
                 <img src="" alt=""/>//will add later
                 <h3>{pants[i].name}</h3>
                 <h3>Price: {pants[i].price}</h3>
-                <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
+                <input type="submit" className="addToCart" value="Add to Cart" onClick={CallChange} data-shopperid={shopper._id} csrf={_csrf} />
             </div>)
         }
         
@@ -241,11 +252,15 @@ const ShoppingOptions = function(props) {
         let insideDisplay = [];
         
         for(let i = 0; i < accessories.length; i++){
+            const CallChange = () => {
+                AddToCart(currentShopperInfo, currentCategory, accessories[i])
+            }
+            
             insideDisplay.push(<div className="itemDisplay accessory">
                 <img src="" alt=""/>//will add later
                 <h3>{accessories[i].name}</h3>
                 <h3>Price: {accessories[i].price}</h3>
-                <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
+                <input type="submit" className="addToCart" value="Add to Cart" onClick={CallChange} data-shopperid={shopper._id} csrf={_csrf} />
             </div>)
         }
         
@@ -283,8 +298,28 @@ const ShoppingOptions = function(props) {
     );
 };
 
-const loadShoppingCart = () => {
+const AddToCart = (shopperData, category, item) => {
+    //adds the selected item to cart of the shopper
+    let tempShopper = shopperData;
+    tempShopper.cart.push(item);
+    tempShopper._csrf = _csrf;
+    //console.log(tempShopper);
     
+    //reload the same shopperoptions
+    sendAjax('POST', '/addToCart', tempShopper, (data) => {
+        GetCurrentShopper(tempShopper.id, category);
+    });
+};
+
+const loadShoppingCart = (shopperData, category) => {
+    sendAjax('GET', '/getCurrentShopper', shopperData, (data) => {
+        
+        ReactDOM.unmountComponentAtNode(document.querySelector("#shoppingOptions"));
+        
+        ReactDOM.render(
+            <ShoppingCart shopperData={data.shopper} category={category} />, document.querySelector("#shoppingCart")
+        ); 
+    });
 }
 
 const ShoppingCart = function(props) {
