@@ -172,8 +172,10 @@ const ShoppingOptions = function(props) {
     currentShopperInfo = props.shopperData;
     //console.log(props.shopperData);
     
+    //console.log(currentShopperInfo);
+    
     const ChangeToShoppingCart = () => {
-        loadShoppingCart(currentShopperInfo, currentCategory)
+        loadShoppingCart(currentShopperInfo._id, currentCategory)
     }
     
     insideShopperInfo.push(<h2 className="shopperInfoText">{currentShopperInfo.name}</h2>);
@@ -300,18 +302,38 @@ const ShoppingOptions = function(props) {
 
 const AddToCart = (shopperData, category, item) => {
     //adds the selected item to cart of the shopper
-    let tempShopper = shopperData;
-    tempShopper.cart.push(item);
-    tempShopper._csrf = _csrf;
+    //let tempShopper = shopperData;
+    //tempShopper.cart.push(item);
+    //tempShopper._csrf = _csrf;
+    
+    let shopperCart = shopperData.cart;
+    shopperCart.push(item);
+    
+    //console.log(shopperCart);
+    //console.log(shopperData);
+    
+    let tempShopper = {
+        id:shopperData._id,
+        cart:shopperCart,
+        _csrf:_csrf,
+    }
+    
+    
     //console.log(tempShopper);
     
     //reload the same shopperoptions
     sendAjax('POST', '/addToCart', tempShopper, (data) => {
         GetCurrentShopper(tempShopper.id, category);
     });
+    return false;
 };
 
-const loadShoppingCart = (shopperData, category) => {
+const loadShoppingCart = (shopperId, category) => {
+    let shopperData = {
+        id:shopperId,
+        _csrf:_csrf
+    } 
+    
     sendAjax('GET', '/getCurrentShopper', shopperData, (data) => {
         
         ReactDOM.unmountComponentAtNode(document.querySelector("#shoppingOptions"));
@@ -328,24 +350,29 @@ const ShoppingCart = function(props) {
     let totalPrice = 0;
     //get the shopping cart list from the shopper object
     
-    //for now just push all shirts to display
-    for(let i = 0; i < shirts.length; i++){
+    let currentCart = props.shopperData.cart;
+    
+    for(let i = 0; i < currentCart.length; i++){
         insideShoppingList.push(
             <div className="shoppingCartItem">
-                <img className="shoppingCartItemIMG" src={shirts[i].src} alt={shirts[i].alt}></img>
+                <img className="shoppingCartItemIMG" src={currentCart[i].src} alt={currentCart[i].alt}></img>
                 <div className="shoppingCartItemTextHolder">
-                    <h3 className="shoppingCartItemName" >{shirts[i].name}</h3>
-                <h3 className="shoppingCartItemPrice" >Price: {shirts[i].price}</h3>
+                    <h3 className="shoppingCartItemName" >{currentCart[i].name}</h3>
+                <h3 className="shoppingCartItemPrice" >Price: {currentCart[i].price}</h3>
                 </div>
             </div>
         );
-        totalPrice += shirts[i].price;
+        totalPrice += parseInt(currentCart[i].price);
+    }
+    
+    const ChangeToPayment = () => {
+        loadPaymentPage(props.shopperData);
     }
     
     insideShoppingList.push(
         <div className="shoppingCartPurchaseSection">
             <h3>Total Price: {totalPrice}</h3>
-            <input type="submit" className="purchase" value="Purchase" onclick={purchaseItems} data-shopperid={shopper._id} csrf={_csrf} />
+            <input type="submit" className="purchase" value="Purchase" onClick={ChangeToPayment} data-shopperid={shopper._id} csrf={_csrf} />
         </div>    
     );
     
@@ -356,32 +383,91 @@ const ShoppingCart = function(props) {
     )
 }
 
-const purchaseItems = () => {
-    //some send ajax call
+const loadPurchaseComplete = (shopperData, paymentInformation) => {
+    let tempShopper = {
+        id:shopperData._id,
+        _csrf:_csrf,
+    }
+    
+    sendAjax('POST', '/emptyCart', tempShopper, (data) => {
+        ReactDOM.unmountComponentAtNode(document.querySelector("#paymentPage"));
+    
+        ReactDOM.render(
+            <PurchaseCompletePage shopperData={shopperData} paymentInformation={paymentInformation} />, document.querySelector("#purchaseComplete")
+        ); 
+        
+    });
+    return false;
+    
+    
 }
 
-const loadPaymentPage = () => {
+const PurchaseCompletePage = function(props) {
+    let insidePurchaseComplete = [];
     
+    let itemsList = [];
+    
+    for(let i = 0; i < props.shopperData.cart.length; i++){
+        itemsList.push(
+            <li>{props.shopperData.cart[i].name}</li>
+        );
+    }
+    
+    const BackToShoppersList = () => {
+        ReactDOM.unmountComponentAtNode(document.querySelector("#purchaseComplete"));
+        
+        setup(_csrf);
+    }
+    
+    insidePurchaseComplete.push(
+        <div id="purchaseCompletePage">
+            <h1>Thank You for your purchase!</h1>
+            <h2>Your order of</h2>
+            <ol>
+                {itemsList}
+            </ol>
+            
+            <h2>These Items will be delivered to {props.paymentInformation.address} in {props.paymentInformation.deliveryTime}</h2>
+            
+            <input type="submit" className="returnToShoppers" value="Return to Shopper's List" onClick={BackToShoppersList} data-shopperid={shopper._id} csrf={_csrf} />
+        </div>
+    );
+    
+    return(
+        <div>
+            {insidePurchaseComplete}
+        </div>
+    )
+}
+
+const loadPaymentPage = (shopperData) => {
+    ReactDOM.unmountComponentAtNode(document.querySelector("#shoppingCart"));
+    
+    ReactDOM.render(
+        <PaymentPage shopperData={shopperData} />, document.querySelector("#paymentPage")
+    ); 
 }
 
 const PaymentPage = function(props) {
-    //let shopperInfo = props.shopper; //use this later
-    
-    //made up shopperInfo to test
-    let shopperInfo = {
-        name: 'Shopper1',
-        money: 10000,
-        age: 4,
-        cart: []
-    };
-    
     let insidePaymentInfo = [];
+    
+    let paymentInformation = {
+        address: 'Middle of the Ocean',
+        deliveryTime: '50 years',
+    }
+    
+    const ChangeToPurchaseComplete = () => {
+        loadPurchaseComplete(props.shopperData, paymentInformation);
+    }
+    
     insidePaymentInfo.push(
         <div className="shoppersInformation">
-            <h2>{shopperInfo.name}</h2>
-            <h2>{shopperInfo.money}</h2>
-            <h2>{shopperInfo.age}</h2>
-            <input type="submit" className="paymentComplete" value="Payment Complete" onclick={purchaseComplete} data-shopperid={shopper._id} csrf={_csrf} />
+            <h2>Name: {props.shopperData.name}</h2>
+            <h2>Money: {props.shopperData.money}</h2>
+            <h2>Age: {props.shopperData.age}</h2>
+            <h2>Address: {paymentInformation.address}</h2>
+            <h2>Time of Delivery: {paymentInformation.deliveryTime}</h2>
+            <input type="submit" className="paymentComplete" value="Confirm Payment" onClick={ChangeToPurchaseComplete} data-shopperid={shopper._id} csrf={_csrf} />
         </div>
     );
     

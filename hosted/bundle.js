@@ -237,9 +237,10 @@ var ShoppingOptions = function ShoppingOptions(props) {
   var display;
   var insideShopperInfo = [];
   currentShopperInfo = props.shopperData; //console.log(props.shopperData);
+  //console.log(currentShopperInfo);
 
   var ChangeToShoppingCart = function ChangeToShoppingCart() {
-    loadShoppingCart(currentShopperInfo, currentCategory);
+    loadShoppingCart(currentShopperInfo._id, currentCategory);
   };
 
   insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
@@ -399,17 +400,31 @@ var ShoppingOptions = function ShoppingOptions(props) {
 
 var AddToCart = function AddToCart(shopperData, category, item) {
   //adds the selected item to cart of the shopper
-  var tempShopper = shopperData;
-  tempShopper.cart.push(item);
-  tempShopper._csrf = _csrf; //console.log(tempShopper);
+  //let tempShopper = shopperData;
+  //tempShopper.cart.push(item);
+  //tempShopper._csrf = _csrf;
+  var shopperCart = shopperData.cart;
+  shopperCart.push(item); //console.log(shopperCart);
+  //console.log(shopperData);
+
+  var tempShopper = {
+    id: shopperData._id,
+    cart: shopperCart,
+    _csrf: _csrf
+  }; //console.log(tempShopper);
   //reload the same shopperoptions
 
   sendAjax('POST', '/addToCart', tempShopper, function (data) {
     GetCurrentShopper(tempShopper.id, category);
   });
+  return false;
 };
 
-var loadShoppingCart = function loadShoppingCart(shopperData, category) {
+var loadShoppingCart = function loadShoppingCart(shopperId, category) {
+  var shopperData = {
+    id: shopperId,
+    _csrf: _csrf
+  };
   sendAjax('GET', '/getCurrentShopper', shopperData, function (data) {
     ReactDOM.unmountComponentAtNode(document.querySelector("#shoppingOptions"));
     ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingCart, {
@@ -423,24 +438,29 @@ var ShoppingCart = function ShoppingCart(props) {
   var shoppingList;
   var insideShoppingList = [];
   var totalPrice = 0; //get the shopping cart list from the shopper object
-  //for now just push all shirts to display
 
-  for (var i = 0; i < shirts.length; i++) {
+  var currentCart = props.shopperData.cart;
+
+  for (var i = 0; i < currentCart.length; i++) {
     insideShoppingList.push( /*#__PURE__*/React.createElement("div", {
       className: "shoppingCartItem"
     }, /*#__PURE__*/React.createElement("img", {
       className: "shoppingCartItemIMG",
-      src: shirts[i].src,
-      alt: shirts[i].alt
+      src: currentCart[i].src,
+      alt: currentCart[i].alt
     }), /*#__PURE__*/React.createElement("div", {
       className: "shoppingCartItemTextHolder"
     }, /*#__PURE__*/React.createElement("h3", {
       className: "shoppingCartItemName"
-    }, shirts[i].name), /*#__PURE__*/React.createElement("h3", {
+    }, currentCart[i].name), /*#__PURE__*/React.createElement("h3", {
       className: "shoppingCartItemPrice"
-    }, "Price: ", shirts[i].price))));
-    totalPrice += shirts[i].price;
+    }, "Price: ", currentCart[i].price))));
+    totalPrice += parseInt(currentCart[i].price);
   }
+
+  var ChangeToPayment = function ChangeToPayment() {
+    loadPaymentPage(props.shopperData);
+  };
 
   insideShoppingList.push( /*#__PURE__*/React.createElement("div", {
     className: "shoppingCartPurchaseSection"
@@ -448,7 +468,7 @@ var ShoppingCart = function ShoppingCart(props) {
     type: "submit",
     className: "purchase",
     value: "Purchase",
-    onclick: purchaseItems,
+    onClick: ChangeToPayment,
     "data-shopperid": shopper._id,
     csrf: _csrf
   })));
@@ -457,28 +477,72 @@ var ShoppingCart = function ShoppingCart(props) {
   }, insideShoppingList);
 };
 
-var purchaseItems = function purchaseItems() {//some send ajax call
+var loadPurchaseComplete = function loadPurchaseComplete(shopperData, paymentInformation) {
+  var tempShopper = {
+    id: shopperData._id,
+    _csrf: _csrf
+  };
+  sendAjax('POST', '/emptyCart', tempShopper, function (data) {
+    ReactDOM.unmountComponentAtNode(document.querySelector("#paymentPage"));
+    ReactDOM.render( /*#__PURE__*/React.createElement(PurchaseCompletePage, {
+      shopperData: shopperData,
+      paymentInformation: paymentInformation
+    }), document.querySelector("#purchaseComplete"));
+  });
+  return false;
 };
 
-var loadPaymentPage = function loadPaymentPage() {};
+var PurchaseCompletePage = function PurchaseCompletePage(props) {
+  var insidePurchaseComplete = [];
+  var itemsList = [];
+
+  for (var i = 0; i < props.shopperData.cart.length; i++) {
+    itemsList.push( /*#__PURE__*/React.createElement("li", null, props.shopperData.cart[i].name));
+  }
+
+  var BackToShoppersList = function BackToShoppersList() {
+    ReactDOM.unmountComponentAtNode(document.querySelector("#purchaseComplete"));
+    setup(_csrf);
+  };
+
+  insidePurchaseComplete.push( /*#__PURE__*/React.createElement("div", {
+    id: "purchaseCompletePage"
+  }, /*#__PURE__*/React.createElement("h1", null, "Thank You for your purchase!"), /*#__PURE__*/React.createElement("h2", null, "Your order of"), /*#__PURE__*/React.createElement("ol", null, itemsList), /*#__PURE__*/React.createElement("h2", null, "These Items will be delivered to ", props.paymentInformation.address, " in ", props.paymentInformation.deliveryTime), /*#__PURE__*/React.createElement("input", {
+    type: "submit",
+    className: "returnToShoppers",
+    value: "Return to Shopper's List",
+    onClick: BackToShoppersList,
+    "data-shopperid": shopper._id,
+    csrf: _csrf
+  })));
+  return /*#__PURE__*/React.createElement("div", null, insidePurchaseComplete);
+};
+
+var loadPaymentPage = function loadPaymentPage(shopperData) {
+  ReactDOM.unmountComponentAtNode(document.querySelector("#shoppingCart"));
+  ReactDOM.render( /*#__PURE__*/React.createElement(PaymentPage, {
+    shopperData: shopperData
+  }), document.querySelector("#paymentPage"));
+};
 
 var PaymentPage = function PaymentPage(props) {
-  //let shopperInfo = props.shopper; //use this later
-  //made up shopperInfo to test
-  var shopperInfo = {
-    name: 'Shopper1',
-    money: 10000,
-    age: 4,
-    cart: []
-  };
   var insidePaymentInfo = [];
+  var paymentInformation = {
+    address: 'Middle of the Ocean',
+    deliveryTime: '50 years'
+  };
+
+  var ChangeToPurchaseComplete = function ChangeToPurchaseComplete() {
+    loadPurchaseComplete(props.shopperData, paymentInformation);
+  };
+
   insidePaymentInfo.push( /*#__PURE__*/React.createElement("div", {
     className: "shoppersInformation"
-  }, /*#__PURE__*/React.createElement("h2", null, shopperInfo.name), /*#__PURE__*/React.createElement("h2", null, shopperInfo.money), /*#__PURE__*/React.createElement("h2", null, shopperInfo.age), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("h2", null, "Name: ", props.shopperData.name), /*#__PURE__*/React.createElement("h2", null, "Money: ", props.shopperData.money), /*#__PURE__*/React.createElement("h2", null, "Age: ", props.shopperData.age), /*#__PURE__*/React.createElement("h2", null, "Address: ", paymentInformation.address), /*#__PURE__*/React.createElement("h2", null, "Time of Delivery: ", paymentInformation.deliveryTime), /*#__PURE__*/React.createElement("input", {
     type: "submit",
     className: "paymentComplete",
-    value: "Payment Complete",
-    onclick: purchaseComplete,
+    value: "Confirm Payment",
+    onClick: ChangeToPurchaseComplete,
     "data-shopperid": shopper._id,
     csrf: _csrf
   })));

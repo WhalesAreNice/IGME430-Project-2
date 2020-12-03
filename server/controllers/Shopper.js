@@ -128,6 +128,39 @@ const AddToCart = (req, res) => {
     });
 }
 
+const EmptyCart = (req, res) => {
+    Shopper.ShopperModel.findById(req.body.id, (err, docs) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json({error: 'An error occured' });
+        }
+        //console.log(docs);
+        if(!docs){
+            console.log("fail");
+            return res.json({error: 'no shopper found' });
+        }
+        
+        const shopperData = docs;
+        
+        //removes items from the cart and subtract from money until cart is empty
+        while(shopperData.cart.length > 0){
+            shopperData.money -= shopperData.cart[shopperData.cart.length - 1].price;
+            shopperData.cart.pop();
+        }
+        
+        
+        const shopperPromise = shopperData.save();
+        
+        shopperPromise.then(() => res.json({redirect: '/maker' }));
+        
+        shopperPromise.catch((errr) => {
+            console.log(errr);
+            return res.status(400).json({error: 'An error occured' });
+        });
+        return shopperPromise;
+    });
+}
+
 const StartShopping = (req, res) => {
     Shopper.ShopperModel.findById(req.body.id, (err, docs) => {
         if(err){
@@ -162,3 +195,4 @@ module.exports.moneyUp = moneyUpShopper;
 module.exports.startShopping = StartShopping;
 module.exports.getCurrentShopper = getCurrentShopper;
 module.exports.addToCart = AddToCart;
+module.exports.emptyCart = EmptyCart;
