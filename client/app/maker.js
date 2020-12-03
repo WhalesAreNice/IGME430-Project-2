@@ -144,7 +144,7 @@ const GetCurrentShopper = (shopperId, category) => {
         _csrf: _csrf,
     }
     
-    sendAjax('GET', '/getCurrentShopper', null, (data) => {
+    sendAjax('GET', '/getCurrentShopper', shopperData, (data) => {
         ReactDOM.render(
             <ShoppingOptions shopperData={data.shopper} category={category} />, document.querySelector("#shoppingOptions")
         ); 

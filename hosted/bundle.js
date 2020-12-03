@@ -218,7 +218,7 @@ var GetCurrentShopper = function GetCurrentShopper(shopperId, category) {
     id: shopperId,
     _csrf: _csrf
   };
-  sendAjax('GET', '/getCurrentShopper', null, function (data) {
+  sendAjax('GET', '/getCurrentShopper', shopperData, function (data) {
     ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingOptions, {
       shopperData: data.shopper,
       category: category
