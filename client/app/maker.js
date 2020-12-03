@@ -1,15 +1,15 @@
 let _csrf;
 
 const categories = ['Shirts', 'Pants', 'Accesssories'];
-    const shirts = [{name:'White T-Shirt', price:20, src:'', alt:'test'}, 
-                    {name:'Black T-Shirt', price:20}, 
-                    {name:'Red T-Shirt', price:20},
-                    {name:'White Cotton Hoodie', price:50},
-                    {name:'Black Cotton Hoodie', price:50},
-                    {name:'Red Cotton Hoodie', price:50},
-                    {name:'White Jacket', price:100},
-                    {name:'Black Jacket', price:100},
-                    {name:'Red Jacket', price:100}];
+    const shirts = [{name:'White T-Shirt', price:20, src:'/assets/img/white-t.png', alt:'White T-Shirt'}, 
+                    {name:'Black T-Shirt', price:20, src:'/assets/img/black-t.png', alt:'Black T-Shirt'}, 
+                    {name:'Red T-Shirt', price:20, src:'/assets/img/red-t.png', alt:'Red T-Shirt'},
+                    {name:'White Cotton Hoodie', price:50, src:'/assets/img/white-hoodie.png', alt:'White Cotton Hoodie'},
+                    {name:'Black Cotton Hoodie', price:50, src:'/assets/img/black-hoodie.png', alt:'Black Cotton Hoodie'},
+                    {name:'Red Cotton Hoodie', price:50, src:'/assets/img/red-hoodie.png', alt:'Red Cotton Hoodie'},
+                    {name:'White Jacket', price:100, src:'/assets/img/white-jacket.png', alt:'White Jacket'},
+                    {name:'Black Jacket', price:100, src:'/assets/img/black-jacket.png', alt:'Black Jacket'},
+                    {name:'Red Jacket', price:100, src:'/assets/img/red-jacket.png', alt:'Red Jacket'}];
     const pants = [{name:'Black Cargo', price:20}, 
                    {name:'White Cargo', price:20}, 
                    {name:'Red Cargo', price:20}];
@@ -136,17 +136,30 @@ const ChangeCategory = (newCategory, shopperId) => {
     return false;
 }
 
-const GetCurrentShopper = (e) => {
-    e.preventDefault();
+const GetCurrentShopper = (shopperId, category) => {
+    //e.preventDefault();
     
     let shopperData = {
-        id: e.target.dataset.shopperid,
+        id: shopperId,
         _csrf: _csrf,
     }
     
     sendAjax('GET', '/getCurrentShopper', null, (data) => {
+        ReactDOM.render(
+            <ShoppingOptions shopperData={data.shopper} category={category} />, document.querySelector("#shoppingOptions")
+        ); 
+        
+        //for now load all the reactDOMs to screen just to see
+        ReactDOM.render(
+            <ShoppingCart shopperData={data.shopper} category={category} />, document.querySelector("#shoppingCart")
+        ); 
+        ReactDOM.render(
+            <PaymentPage shopperData={data.shopper} category={category} />, document.querySelector("#paymentPage")
+        ); 
         
     });
+    
+    
     return false;
 }
 
@@ -159,6 +172,8 @@ const ShoppingOptions = function(props) {
     
     let insideShopperInfo = [];
     
+    currentShopperInfo = props.shopperData;
+    console.log(props);
     
     insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Name</h2>);
     insideShopperInfo.push(<h2 className="shopperInfoText">Shopper's Money</h2>);
@@ -189,7 +204,7 @@ const ShoppingOptions = function(props) {
         
         for(let i = 0; i < shirts.length; i++){
             insideDisplay.push(<div className="itemDisplay shirt">
-                <img src={shirts[i].src} alt={shirts[i].alt}/>//will add later
+                <img src={shirts[i].src} alt={shirts[i].alt}/>
                 <h3>{shirts[i].name}</h3>
                 <h3>Price: {shirts[i].price}</h3>
                 <input type="submit" className="addToCart" value="Add to Cart" onClick={AddToCart} data-shopperid={shopper._id} csrf={_csrf} />
@@ -268,14 +283,94 @@ const ShoppingOptions = function(props) {
     );
 };
 
+const loadShoppingCart = () => {
+    
+}
+
+const ShoppingCart = function(props) {
+    let shoppingList;
+    let insideShoppingList =[];
+    let totalPrice = 0;
+    //get the shopping cart list from the shopper object
+    
+    //for now just push all shirts to display
+    for(let i = 0; i < shirts.length; i++){
+        insideShoppingList.push(
+            <div className="shoppingCartItem">
+                <img className="shoppingCartItemIMG" src={shirts[i].src} alt={shirts[i].alt}></img>
+                <div className="shoppingCartItemTextHolder">
+                    <h3 className="shoppingCartItemName" >{shirts[i].name}</h3>
+                <h3 className="shoppingCartItemPrice" >Price: {shirts[i].price}</h3>
+                </div>
+            </div>
+        );
+        totalPrice += shirts[i].price;
+    }
+    
+    insideShoppingList.push(
+        <div className="shoppingCartPurchaseSection">
+            <h3>Total Price: {totalPrice}</h3>
+            <input type="submit" className="purchase" value="Purchase" onclick={purchaseItems} data-shopperid={shopper._id} csrf={_csrf} />
+        </div>    
+    );
+    
+    return (
+        <div className="shoppingCart">
+            {insideShoppingList}
+        </div>
+    )
+}
+
+const purchaseItems = () => {
+    //some send ajax call
+}
+
+const loadPaymentPage = () => {
+    
+}
+
+const PaymentPage = function(props) {
+    //let shopperInfo = props.shopper; //use this later
+    
+    //made up shopperInfo to test
+    let shopperInfo = {
+        name: 'Shopper1',
+        money: 10000,
+        age: 4,
+        cart: []
+    };
+    
+    let insidePaymentInfo = [];
+    insidePaymentInfo.push(
+        <div className="shoppersInformation">
+            <h2>{shopperInfo.name}</h2>
+            <h2>{shopperInfo.money}</h2>
+            <h2>{shopperInfo.age}</h2>
+            <input type="submit" className="paymentComplete" value="Payment Complete" onclick={purchaseComplete} data-shopperid={shopper._id} csrf={_csrf} />
+        </div>
+    );
+    
+    return(
+        <div className="paymentInformation">
+            {insidePaymentInfo}
+        </div>
+    )
+}
+
+const paymentComplete = () => {
+    //some send ajax call
+}
+
 const loadShoppingOptions = (shopperId, category) => {
     sendAjax('GET', '/getShopper', null, (data) => {
-        ReactDOM.render(
-            <ShoppingOptions shopperId={shopperId} category={category} />, document.querySelector("#shoppingOptions")
-        ); 
+        GetCurrentShopper(shopperId, category);
+        //ReactDOM.render(
+        //    <ShoppingOptions shopperId={shopperId} category={category} />, document.querySelector("#shoppingOptions")
+        //); 
         
         ReactDOM.unmountComponentAtNode(document.querySelector("#makeShopper"));
         ReactDOM.unmountComponentAtNode(document.querySelector("#shoppers"));
+        
     });
 }
 

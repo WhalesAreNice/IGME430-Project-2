@@ -6,32 +6,48 @@ var categories = ['Shirts', 'Pants', 'Accesssories'];
 var shirts = [{
   name: 'White T-Shirt',
   price: 20,
-  src: '',
-  alt: 'test'
+  src: '/assets/img/white-t.png',
+  alt: 'White T-Shirt'
 }, {
   name: 'Black T-Shirt',
-  price: 20
+  price: 20,
+  src: '/assets/img/black-t.png',
+  alt: 'Black T-Shirt'
 }, {
   name: 'Red T-Shirt',
-  price: 20
+  price: 20,
+  src: '/assets/img/red-t.png',
+  alt: 'Red T-Shirt'
 }, {
   name: 'White Cotton Hoodie',
-  price: 50
+  price: 50,
+  src: '/assets/img/white-hoodie.png',
+  alt: 'White Cotton Hoodie'
 }, {
   name: 'Black Cotton Hoodie',
-  price: 50
+  price: 50,
+  src: '/assets/img/black-hoodie.png',
+  alt: 'Black Cotton Hoodie'
 }, {
   name: 'Red Cotton Hoodie',
-  price: 50
+  price: 50,
+  src: '/assets/img/red-hoodie.png',
+  alt: 'Red Cotton Hoodie'
 }, {
   name: 'White Jacket',
-  price: 100
+  price: 100,
+  src: '/assets/img/white-jacket.png',
+  alt: 'White Jacket'
 }, {
   name: 'Black Jacket',
-  price: 100
+  price: 100,
+  src: '/assets/img/black-jacket.png',
+  alt: 'Black Jacket'
 }, {
   name: 'Red Jacket',
-  price: 100
+  price: 100,
+  src: '/assets/img/red-jacket.png',
+  alt: 'Red Jacket'
 }];
 var pants = [{
   name: 'Black Cargo',
@@ -196,13 +212,27 @@ var ChangeCategory = function ChangeCategory(newCategory, shopperId) {
   return false;
 };
 
-var GetCurrentShopper = function GetCurrentShopper(e) {
-  e.preventDefault();
+var GetCurrentShopper = function GetCurrentShopper(shopperId, category) {
+  //e.preventDefault();
   var shopperData = {
-    id: e.target.dataset.shopperid,
+    id: shopperId,
     _csrf: _csrf
   };
-  sendAjax('GET', '/getCurrentShopper', null, function (data) {});
+  sendAjax('GET', '/getCurrentShopper', null, function (data) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingOptions, {
+      shopperData: data.shopper,
+      category: category
+    }), document.querySelector("#shoppingOptions")); //for now load all the reactDOMs to screen just to see
+
+    ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingCart, {
+      shopperData: data.shopper,
+      category: category
+    }), document.querySelector("#shoppingCart"));
+    ReactDOM.render( /*#__PURE__*/React.createElement(PaymentPage, {
+      shopperData: data.shopper,
+      category: category
+    }), document.querySelector("#paymentPage"));
+  });
   return false;
 };
 
@@ -213,6 +243,8 @@ var ShoppingOptions = function ShoppingOptions(props) {
   var categorySelect;
   var display;
   var insideShopperInfo = [];
+  currentShopperInfo = props.shopperData;
+  console.log(props);
   insideShopperInfo.push( /*#__PURE__*/React.createElement("h2", {
     className: "shopperInfoText"
   }, "Shopper's Name"));
@@ -257,7 +289,7 @@ var ShoppingOptions = function ShoppingOptions(props) {
       }, /*#__PURE__*/React.createElement("img", {
         src: shirts[_i].src,
         alt: shirts[_i].alt
-      }), "//will add later", /*#__PURE__*/React.createElement("h3", null, shirts[_i].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", shirts[_i].price), /*#__PURE__*/React.createElement("input", {
+      }), /*#__PURE__*/React.createElement("h3", null, shirts[_i].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", shirts[_i].price), /*#__PURE__*/React.createElement("input", {
         type: "submit",
         className: "addToCart",
         value: "Add to Cart",
@@ -339,12 +371,85 @@ var ShoppingOptions = function ShoppingOptions(props) {
   }, shoppingPage);
 };
 
+var loadShoppingCart = function loadShoppingCart() {};
+
+var ShoppingCart = function ShoppingCart(props) {
+  var shoppingList;
+  var insideShoppingList = [];
+  var totalPrice = 0; //get the shopping cart list from the shopper object
+  //for now just push all shirts to display
+
+  for (var i = 0; i < shirts.length; i++) {
+    insideShoppingList.push( /*#__PURE__*/React.createElement("div", {
+      className: "shoppingCartItem"
+    }, /*#__PURE__*/React.createElement("img", {
+      className: "shoppingCartItemIMG",
+      src: shirts[i].src,
+      alt: shirts[i].alt
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "shoppingCartItemTextHolder"
+    }, /*#__PURE__*/React.createElement("h3", {
+      className: "shoppingCartItemName"
+    }, shirts[i].name), /*#__PURE__*/React.createElement("h3", {
+      className: "shoppingCartItemPrice"
+    }, "Price: ", shirts[i].price))));
+    totalPrice += shirts[i].price;
+  }
+
+  insideShoppingList.push( /*#__PURE__*/React.createElement("div", {
+    className: "shoppingCartPurchaseSection"
+  }, /*#__PURE__*/React.createElement("h3", null, "Total Price: ", totalPrice), /*#__PURE__*/React.createElement("input", {
+    type: "submit",
+    className: "purchase",
+    value: "Purchase",
+    onclick: purchaseItems,
+    "data-shopperid": shopper._id,
+    csrf: _csrf
+  })));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "shoppingCart"
+  }, insideShoppingList);
+};
+
+var purchaseItems = function purchaseItems() {//some send ajax call
+};
+
+var loadPaymentPage = function loadPaymentPage() {};
+
+var PaymentPage = function PaymentPage(props) {
+  //let shopperInfo = props.shopper; //use this later
+  //made up shopperInfo to test
+  var shopperInfo = {
+    name: 'Shopper1',
+    money: 10000,
+    age: 4,
+    cart: []
+  };
+  var insidePaymentInfo = [];
+  insidePaymentInfo.push( /*#__PURE__*/React.createElement("div", {
+    className: "shoppersInformation"
+  }, /*#__PURE__*/React.createElement("h2", null, shopperInfo.name), /*#__PURE__*/React.createElement("h2", null, shopperInfo.money), /*#__PURE__*/React.createElement("h2", null, shopperInfo.age), /*#__PURE__*/React.createElement("input", {
+    type: "submit",
+    className: "paymentComplete",
+    value: "Payment Complete",
+    onclick: purchaseComplete,
+    "data-shopperid": shopper._id,
+    csrf: _csrf
+  })));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "paymentInformation"
+  }, insidePaymentInfo);
+};
+
+var paymentComplete = function paymentComplete() {//some send ajax call
+};
+
 var loadShoppingOptions = function loadShoppingOptions(shopperId, category) {
   sendAjax('GET', '/getShopper', null, function (data) {
-    ReactDOM.render( /*#__PURE__*/React.createElement(ShoppingOptions, {
-      shopperId: shopperId,
-      category: category
-    }), document.querySelector("#shoppingOptions"));
+    GetCurrentShopper(shopperId, category); //ReactDOM.render(
+    //    <ShoppingOptions shopperId={shopperId} category={category} />, document.querySelector("#shoppingOptions")
+    //); 
+
     ReactDOM.unmountComponentAtNode(document.querySelector("#makeShopper"));
     ReactDOM.unmountComponentAtNode(document.querySelector("#shoppers"));
   });

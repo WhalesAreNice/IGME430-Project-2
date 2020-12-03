@@ -288,7 +288,9 @@ h3.shopperMoney {
 #shopCategories{
     width:250px;
     background-color:pink;
-    float:left;
+    display:inline-block;
+    //float:left;
+    vertical-align: top;
 }
 
 .shopItems{
@@ -296,7 +298,8 @@ h3.shopperMoney {
     background-color:skyblue;
     text-align:center;
     border-left:solid 5px black;
-    float:right;
+    display:inline-block;
+    //float:right;
 }
 
 #currentShopper{
@@ -311,4 +314,38 @@ h3.shopperMoney {
     margin: 0 auto;
     text-align:center;
     
+}
+
+.shoppingCartItem{
+    display:block;
+    width:100%;
+    background-color:bisque;
+    padding:15px 30px;
+    border-bottom: solid 2px black;
+}
+
+.shoppingCartItemIMG{
+    margin:10;
+    display:inline-block;
+    border:black solid 2px;
+    padding:1px;
+}
+
+.shoppingCartItemTextHolder{
+    vertical-align:top;
+    display:inline-block;
+    
+}
+
+.shoppingCartItemName{
+    padding:10;
+}
+
+.shoppingCartItemPrice{
+    padding:10;
+}
+
+.shoppingCartPurchaseSection{
+    padding-left: 30px;
+    margin-bottom: 30px;
 }

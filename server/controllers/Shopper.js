@@ -57,27 +57,17 @@ const getShoppers = (request, response) => {
 };
 
 const getCurrentShopper = (req, res) => {
-    Shopper.ShopperModel.findById(req.body.id, (err, docs) => {
+    Shopper.ShopperModel.findById(req.body.id, (err, doc) => {
         if(err){
             console.log(err);
             return res.status(400).json({error: 'An error occured' });
         }
-        if(!docs){
+        if(!doc){
             console.log("fail");
             return res.json({error: 'no shopper found' });
         }
         
-        const shopperData = docs;
-        
-        const shopperPromise = shopperData.save();
-        
-        shopperPromise.then(() => res.json({redirect: '/maker' }));
-        
-        shopperPromise.catch((errr) => {
-            console.log(errr);
-            return res.status(400).json({error: 'An error occured' });
-        });
-        return shopperPromise;
+        return res.json({ shopper: doc });
     });
 }
 
