@@ -10,12 +10,12 @@ const categories = ['Shirts', 'Pants', 'Accesssories'];
                     {name:'White Jacket', price:100, src:'/assets/img/white-jacket.png', alt:'White Jacket'},
                     {name:'Black Jacket', price:100, src:'/assets/img/black-jacket.png', alt:'Black Jacket'},
                     {name:'Red Jacket', price:100, src:'/assets/img/red-jacket.png', alt:'Red Jacket'}];
-    const pants = [{name:'Black Cargo', price:20}, 
-                   {name:'White Cargo', price:20}, 
-                   {name:'Red Cargo', price:20}];
-    const accessories = [{name:'Necklace', price:20}, 
-                         {name:'Bracelet', price:20}, 
-                         {name:'Ring', price:20}];
+    const pants = [{name:'Black Cargo Pants', price:50, src:'/assets/img/black-cargo-pants.png', alt:'Black Cargo Pants'}, 
+                   {name:'Red Cargo Pants', price:50, src:'/assets/img/red-cargo-pants.png', alt:'Red Cargo Pants'},
+                  {name:'Gray Joggers', price:50, src:'/assets/img/gray-jogger.png', alt:'Gray Joggers'}];
+    const accessories = [{name:'Necklace', price:1500, src:'/assets/img/necklace.png', alt:'Necklace'}, 
+                         {name:'Bracelet', price:1200, src:'/assets/img/bracelet.png', alt:'Bracelet'}, 
+                         {name:'Ring', price:1000, src:'/assets/img/ring.png', alt:'Ring'}];
 
 const handleShopper = (e) => {
     e.preventDefault();
@@ -118,7 +118,6 @@ const StartShopping = (e) => {
 
 const ChangeCategory = (newCategory, shopperId) => {
     //e.preventDefault();
-    
     let shopperData = {
         id: shopperId,
         _csrf: _csrf,
@@ -135,7 +134,6 @@ const ChangeCategory = (newCategory, shopperId) => {
 
 const GetCurrentShopper = (shopperId, category) => {
     //e.preventDefault();
-    
     let shopperData = {
         id: shopperId,
         _csrf: _csrf,
@@ -188,12 +186,12 @@ const ShoppingOptions = function(props) {
            </div>
         </div>
     );
-    
+    //console.log(props.shopperData._id);
     let insideCategorySelect = [];
     insideCategorySelect.push(<h2>Shopping Category</h2>);
     for(let i = 0; i < categories.length; i++){
         const CallChange = () => {
-            ChangeCategory(categories[i], props.shopperId)
+            ChangeCategory(categories[i], props.shopperData._id)
         }
         
         insideCategorySelect.push(<a className="shoppingCategory" href="#" onClick={CallChange}>{categories[i]}</a>);
@@ -236,7 +234,7 @@ const ShoppingOptions = function(props) {
             }
             
             insideDisplay.push(<div className="itemDisplay pant">
-                <img src="" alt=""/>//will add later
+                <img src={pants[i].src} alt={pants[i].alt}/>
                 <h3>{pants[i].name}</h3>
                 <h3>Price: {pants[i].price}</h3>
                 <input type="submit" className="addToCart" value="Add to Cart" onClick={CallChange} data-shopperid={shopper._id} csrf={_csrf} />
@@ -259,7 +257,7 @@ const ShoppingOptions = function(props) {
             }
             
             insideDisplay.push(<div className="itemDisplay accessory">
-                <img src="" alt=""/>//will add later
+                <img src={accessories[i].src} alt={accessories[i].alt}/>
                 <h3>{accessories[i].name}</h3>
                 <h3>Price: {accessories[i].price}</h3>
                 <input type="submit" className="addToCart" value="Add to Cart" onClick={CallChange} data-shopperid={shopper._id} csrf={_csrf} />

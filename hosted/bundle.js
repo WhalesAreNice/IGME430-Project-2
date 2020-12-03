@@ -50,24 +50,36 @@ var shirts = [{
   alt: 'Red Jacket'
 }];
 var pants = [{
-  name: 'Black Cargo',
-  price: 20
+  name: 'Black Cargo Pants',
+  price: 50,
+  src: '/assets/img/black-cargo-pants.png',
+  alt: 'Black Cargo Pants'
 }, {
-  name: 'White Cargo',
-  price: 20
+  name: 'Red Cargo Pants',
+  price: 50,
+  src: '/assets/img/red-cargo-pants.png',
+  alt: 'Red Cargo Pants'
 }, {
-  name: 'Red Cargo',
-  price: 20
+  name: 'Gray Joggers',
+  price: 50,
+  src: '/assets/img/gray-jogger.png',
+  alt: 'Gray Joggers'
 }];
 var accessories = [{
   name: 'Necklace',
-  price: 20
+  price: 1500,
+  src: '/assets/img/necklace.png',
+  alt: 'Necklace'
 }, {
   name: 'Bracelet',
-  price: 20
+  price: 1200,
+  src: '/assets/img/bracelet.png',
+  alt: 'Bracelet'
 }, {
   name: 'Ring',
-  price: 20
+  price: 1000,
+  src: '/assets/img/ring.png',
+  alt: 'Ring'
 }];
 
 var handleShopper = function handleShopper(e) {
@@ -259,13 +271,14 @@ var ShoppingOptions = function ShoppingOptions(props) {
     id: "currentShopper"
   }, /*#__PURE__*/React.createElement("div", {
     id: "currentShopperFloatBox"
-  }, insideShopperInfo));
+  }, insideShopperInfo)); //console.log(props.shopperData._id);
+
   var insideCategorySelect = [];
   insideCategorySelect.push( /*#__PURE__*/React.createElement("h2", null, "Shopping Category"));
 
   var _loop = function _loop(i) {
     var CallChange = function CallChange() {
-      ChangeCategory(categories[i], props.shopperId);
+      ChangeCategory(categories[i], props.shopperData._id);
     };
 
     insideCategorySelect.push( /*#__PURE__*/React.createElement("a", {
@@ -326,9 +339,9 @@ var ShoppingOptions = function ShoppingOptions(props) {
       _insideDisplay.push( /*#__PURE__*/React.createElement("div", {
         className: "itemDisplay pant"
       }, /*#__PURE__*/React.createElement("img", {
-        src: "",
-        alt: ""
-      }), "//will add later", /*#__PURE__*/React.createElement("h3", null, pants[_i2].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", pants[_i2].price), /*#__PURE__*/React.createElement("input", {
+        src: pants[_i2].src,
+        alt: pants[_i2].alt
+      }), /*#__PURE__*/React.createElement("h3", null, pants[_i2].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", pants[_i2].price), /*#__PURE__*/React.createElement("input", {
         type: "submit",
         className: "addToCart",
         value: "Add to Cart",
@@ -358,9 +371,9 @@ var ShoppingOptions = function ShoppingOptions(props) {
       _insideDisplay2.push( /*#__PURE__*/React.createElement("div", {
         className: "itemDisplay accessory"
       }, /*#__PURE__*/React.createElement("img", {
-        src: "",
-        alt: ""
-      }), "//will add later", /*#__PURE__*/React.createElement("h3", null, accessories[_i3].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", accessories[_i3].price), /*#__PURE__*/React.createElement("input", {
+        src: accessories[_i3].src,
+        alt: accessories[_i3].alt
+      }), /*#__PURE__*/React.createElement("h3", null, accessories[_i3].name), /*#__PURE__*/React.createElement("h3", null, "Price: ", accessories[_i3].price), /*#__PURE__*/React.createElement("input", {
         type: "submit",
         className: "addToCart",
         value: "Add to Cart",

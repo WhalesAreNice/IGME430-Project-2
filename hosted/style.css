@@ -273,7 +273,7 @@ h3.shopperMoney {
 
 .itemDisplay {
     display:inline-block;
-    background-color:palegreen;
+    //background-color:palegreen;
     width:200px;
     margin:10 20;
     padding:10 20;
@@ -287,7 +287,7 @@ h3.shopperMoney {
 
 #shopCategories{
     width:250px;
-    background-color:pink;
+    //background-color:pink;
     display:inline-block;
     //float:left;
     vertical-align: top;
@@ -295,7 +295,7 @@ h3.shopperMoney {
 
 .shopItems{
     width:900px;
-    background-color:skyblue;
+    //background-color:skyblue;
     text-align:center;
     border-left:solid 5px black;
     display:inline-block;
@@ -304,13 +304,14 @@ h3.shopperMoney {
 
 #currentShopper{
     display:block;
-    background-color:mediumpurple;
+    border-bottom: solid 2px black;
+    //background-color:mediumpurple;
 }
 
 #currentShopperFloatBox{
     margin:0 auto;
-    display:inline-block;
-    background-color:red;
+    display:block;
+    //background-color:red;
 }
 
 .shopperInfoText{
@@ -324,7 +325,7 @@ h3.shopperMoney {
 .shoppingCartItem{
     display:block;
     width:100%;
-    background-color:bisque;
+    //background-color:bisque;
     padding:15px 30px;
     border-bottom: solid 2px black;
 }
@@ -353,4 +354,13 @@ h3.shopperMoney {
 .shoppingCartPurchaseSection{
     padding-left: 30px;
     margin-bottom: 30px;
+}
+
+.itemDisplay{
+    padding:10px 20px;
+    border:2px solid gray;
+}
+
+.itemDisplay img {
+    border:1px solid bisque;
 }
